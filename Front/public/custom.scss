@@ -1,0 +1,9 @@
+// Identité graphique de Groupomania
+$theme-colors: ( "primary": #FD2D01, "secondary": #FFD7D7, "success": #4E5166);
+///:root {
+///    --bs-body-font-family: 'Lato', sans-serif;
+///}
+// Importation de Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+//Importation de la Font "LATO"
+///@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
