@@ -1,19 +1,21 @@
 <script>
   import "../public/custom.css"
-  import LoginVue from './components/Login.vue'
-  import Navbar from './components/Navbar.vue'
+  import LoginPage from './pages/LoginPage.vue'
+  import SignUpPage from "./pages/SignUpPage.vue"
+  import AppNavbar from './components/layout/AppNavbar.vue'
 
   export default {
     name: "App",
     components: {
-      LoginVue,
-      Navbar
+      LoginPage,
+      SignUpPage,
+      AppNavbar
     }
   }
 </script>
 
 <template>
-  <navbar />
+  <AppNavbar />
   <router-view></router-view>
 </template>
 

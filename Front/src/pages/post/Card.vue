@@ -1,7 +1,7 @@
 <script>
-  import "../../public/custom.css"
+  import "../../../public/custom.css"
   import Comment from "./Comment.vue"
-  import Avatar from "./Avatar.vue"
+  import Avatar from "../../components/ui/Avatar.vue"
   export default {
       name: "Card",
       components: {

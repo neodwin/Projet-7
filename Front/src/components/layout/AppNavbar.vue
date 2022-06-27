@@ -1,8 +1,8 @@
 <script>
-    import "../../public/custom.css"
-    import Logo from "./Logo.vue"
+    import "../../../public/custom.css"
+    import Logo from "../ui/Logo.vue"
     export default {
-        name: "Navbar",
+        name: "AppNavbar",
         components: { Logo }
     }
 </script>

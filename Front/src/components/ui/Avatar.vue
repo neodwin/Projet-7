@@ -6,7 +6,7 @@
 
 <template>
     <img 
-        src="../assets/avatar.jpg" 
+        src="../../assets/avatar.jpg" 
         alt="avatar" 
         class="rounded-circle me-2" 
     />

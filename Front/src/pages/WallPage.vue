@@ -1,9 +1,9 @@
 <script>
 import "../../public/custom.css"
-import Card from "./Card.vue"
-import PostForm from "./PostForm.vue"
+import Card from "./post/Card.vue"
+import PostForm from "./post/PostForm.vue"
 export default {
-    name: "Wall",
+    name: "WallPage",
     components: {
         Card,
         PostForm
@@ -14,7 +14,6 @@ export default {
 <template>
     <div class="container-sm">
         <PostForm></PostForm>
-        <hr class="dropdown-divider mt-4" />
         <Card></Card>
         <Card></Card>
         <Card></Card>

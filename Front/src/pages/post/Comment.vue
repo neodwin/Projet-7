@@ -1,5 +1,5 @@
 <script>
-    import Avatar from "./Avatar.vue"
+    import Avatar from "../../components/ui/Avatar.vue"
     export default {
         name: "Comment",
         components: {
