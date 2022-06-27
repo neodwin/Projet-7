@@ -1,17 +1,20 @@
 <script>
-import "../../public/custom.css"
-export default {
-    name: "Card"
-}
+  import "../../public/custom.css"
+  import Comment from "./Comment.vue"
+  import Avatar from "./Avatar.vue"
+  export default {
+      name: "Card",
+      components: {
+      Comment,
+      Avatar
+    }
+  }
 </script>
+
 <template>
 <div class="card mb-3 m-auto">
     <div class="card-header p-2">
-        <img 
-            src="../assets/avatar.jpg" 
-            alt="avatar" 
-            class="rounded-circle me-2" 
-        />
+        <Avatar></Avatar>
             Edwin D
     </div>
   <img src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp" class="card-img-top" alt="Wild Landscape"/>
@@ -24,14 +27,22 @@ export default {
     <p class="card-text">
       <small class="text-muted">Last updated 3 mins ago</small>
     </p>
+    <Comment></Comment>
+    <Comment></Comment>
+
+    <div class="d-flex gap-1">
+      <Avatar></Avatar>
+      <input type="text" class="form-control" placeholder="Commentaire" aria-label="Commentaire" />
+      <button type="button" class="btn ms-auto btn-primary">Poster</button>
+    </div>
   </div>
 </div>
 </template>
+
 <style>
-.card {
-    width: 480px;
-}
-.card-header img {
-    width: 21px;
+@media (min-width: 768px) {
+  .card {
+    width: 70%;
+  } 
 }
 </style>

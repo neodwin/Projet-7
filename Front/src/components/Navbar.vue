@@ -31,12 +31,10 @@
 
 <style scoped>
 header {
-  background-color: #FD2D01 !important;
-}
-.nav-link {
-  color: #4E5166 !important;
+  background-color: #FFD7D7 !important;
 }
 .btn-outline-success {
-  background-color: #FFD7D7 !important;
+  color: #4E5166;
+  background-color: #FD2D01 !important;
 }
 </style>
