@@ -17,12 +17,13 @@
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li>
-            <router-link to="/home" class="nav-link px-2 text-success">Home</router-link></li>
+            <router-link to="/home" class="nav-link px-2 text-success">Home</router-link>
+          </li>
         </ul>
 
         <div class="text-end">
-          <button type="button" class="btn btn-outline-success me-2">Connexion</button>
-          <button type="button" class="btn join btn-secondary">Rejoignez-nous</button>
+          <button @click="$router.push('')" type="button" class="btn btn-outline-success me-2">Connexion</button>
+          <button @click="$router.push('signup')" type="button" class="btn join btn-secondary">Rejoignez-nous</button>
         </div>
       </div>
     </div>
