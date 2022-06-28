@@ -6,7 +6,7 @@
       name: "Card",
       components: {
       Comment,
-      Avatar
+      Avatar,
     }
   }
 </script>
@@ -24,19 +24,11 @@
       This is a wider card with supporting text below as a natural lead-in to additional
       content. This content is a little bit longer.
     </p>
-    <div class="pull-right">
-      <div class="like-btn d-flex">
-        <i id="like1" class="glyphicon glyphicon-thumbs-up">
-        </i>
-      <div id="like1-bs3">
-      </div>
-      </div>
-      <div class="dislike-btn d-flex">
-        <i id="dislike1" class="glyphicon glyphicon-thumbs-down">
-        </i>
-        <div id="dislike1-bs3">
+    <div class="panel-footer">
+        <div class="pull-right">
+          <font-awesome-icon :icon="['fa-regular', 'thumbs-up']" /> <div id="like1-bs3"></div>
         </div>
-      </div>
+        
     </div>
     <p class="card-text">
       <small class="text-muted">Last updated 3 mins ago</small>
@@ -59,23 +51,26 @@
     width: 70%;
   } 
 }
-.like-btn{
-background: #3399ff none repeat scroll 0 0;
-border-radius: 3px;
-color: white;
-padding: 7px 3px 3px 7px;
-margin-right: 5px;
-margin-top: -5px;
-width: 100%;
-}
-.like-btn i,.dislike-btn i{
-color: white !important;
-}
-.dislike-btn{
-background: #FA4E69 none repeat scroll 0 0;
-border-radius: 3px;
-color: white;
-padding: 7px 5px 3px 3px;
-margin-top: -5px;
-}
+.panel-footer { 
+  padding: 8px !important; 
+  background-color: #f9f9f9 !important; 
+  border-bottom-right-radius: 0 !important; 
+  border-bottom-left-radius: 0 !important; 
+  }
+  
+.panel-footer div { 
+  width: 15px;
+  display: flex; 
+  gap: 20px;
+  font: 300 normal 1.125em "Roboto",Arial,Verdana,sans-serif; 
+  color: #34495e; 
+  text-align: center; 
+  background-color: transparent !important; 
+  border: none !important; 
+  }	
+
+  .svg-inline--fa {
+    height: 25px;
+  }
+
 </style>

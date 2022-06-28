@@ -1,7 +1,25 @@
 <script>
     import "../../public/custom.css"
+
+      function checkIdentifiers(email, password) {
+        console.log({ email, password })
+        
+        if (email !== "edwin@edwin.fr") throw new Error ("email invalide")
+        if (password !== "MayTheBeer") throw new Error ("password invalide")
+        
+        const token = "my JWT token"
+        localStorage.setItem("token", token)
+      }
+
     export default {
-        name: "LoginPage"
+        name: "LoginPage",
+        data,
+        methods: {
+          checkIdentifiers
+        }
+    }
+    function data() {
+      return { email: "edwin@edwin.fr", password: "MayTheBeer" }
     }
 </script>
 
@@ -10,14 +28,16 @@
     <form>
         <h1 class="h3 mb-3 fw-normal">Veuillez vous identifier</h1>
       <div class="form-floating">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" v-model="email" />
         <label for="floatingInput">Adresse e-mail</label>
       </div>
       <div class="form-floating">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="password" />
         <label for="floatingPassword">Mot de passe</label>
       </div>
-      <button class="w-100 btn btn-lg btn-success" type="submit">Se connecter</button>
+      <button class="w-100 btn btn-lg btn-success" type="submit" @click.prevent="checkIdentifiers(this.email, this.password)">Se connecter</button>
+      <p class="mt-5 mb-3 text-muted">Value: {{ email }}</p>
+      <p class="mt-5 mb-3 text-muted">Value: {{ password }}</p>
     </form>
   </main>
 </template>
