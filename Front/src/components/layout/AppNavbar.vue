@@ -24,6 +24,7 @@
         <div class="text-end">
           <button @click="$router.push('')" type="button" class="btn btn-outline-success me-2">Connexion</button>
           <button @click="$router.push('signup')" type="button" class="btn join btn-secondary">Rejoignez-nous</button>
+          <button type="button" class="btn btn-outline-dark ms-2">Déconnexion</button>
         </div>
       </div>
     </div>

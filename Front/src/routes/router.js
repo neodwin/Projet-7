@@ -17,8 +17,9 @@ router.beforeEach((to, from) => {
 })
 
 function loginRequired(to) {
-    if (privatePage(to) && !tokenInCache()) return true
-    if (privatePage(to) && !tokenOk()) return true
+    if (!privatePage(to)) return false
+    if (!tokenInCache()) return true
+    if (!tokenOk()) return true
     return false
 }
 

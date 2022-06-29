@@ -27,8 +27,7 @@
     <div class="panel-footer">
         <div class="pull-right">
           <font-awesome-icon :icon="['fa-regular', 'thumbs-up']" /> <div id="like1-bs3"></div>
-        </div>
-        
+        </div>  
     </div>
     <p class="card-text">
       <small class="text-muted">Last updated 3 mins ago</small>
