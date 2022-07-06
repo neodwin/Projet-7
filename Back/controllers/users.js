@@ -7,16 +7,16 @@ function logUser(req, res) {
     const { email, password } = req.body
     const user = getUser(email)
 
-    if (user == null) return res.status(404).send("Utilisateur introuvable")
+    if (user == null) return res.status(404).send({ error: "Utilisateur introuvable" })
 
     checkingPassword(user, password)
         .then((passwordOk) => {
-            if (!passwordOk) return res.status(401).send('Mot de passe erroné')
+            if (!passwordOk) return res.status(401).send({ error: "Mot de passe erroné" })
 
             const token = makeToken(email)
             res.send({ token: token, email: user.email })
         })
-        .catch(err => res.status(500).send(err))
+        .catch(error => res.status(500).send({ error }))
 }
 
 // Création des tokens
@@ -35,16 +35,16 @@ function checkingPassword(user, password) {
 // Création signup
 function signupUser(req, res) {
     const { email, password, confirmPassword } = req.body
-    if (password !== confirmPassword) return res.status(400).send("Les mots de passe ne correspondent pas")
+    if (password !== confirmPassword) return res.status(400).send({ error: "Les mots de passe ne correspondent pas" })
     const user = getUser(email)
-    if (user != null) return res.status(400).send("L'utilisateur est déjà inscrit")
+    if (user != null) return res.status(400).send({ error: "L'utilisateur est déjà inscrit" })
 
     passwordHash(password)
         .then((hash) => {
             addUserInDb({ email, password: hash })
             res.send({ email: email })
         })
-        .catch((err) => res.status(500).send(err))
+        .catch((error) => res.status(500).send({ error }))
 }
 
 // Hachage des mots de passe

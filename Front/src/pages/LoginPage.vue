@@ -1,15 +1,35 @@
 <script>
     import "../../public/custom.css"
 
-      function checkIdentifiers(email, password) {
+      function checkIdentifiers(email, password, router) {
         console.log({ email, password })
+        const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
+        const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/auth/login`
         
-        if (email !== "edwin@edwin.fr") throw new Error ("email invalide")
-        if (password !== "MayTheBeer") throw new Error ("password invalide")
-        
-        const token = "my JWT token"
-        localStorage.setItem("token", token)
-        this.$router.push("/home")
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        }
+        fetch(url, options)
+          .then((res) => { 
+            if (res.ok) return res.json()
+            res.text().then((err) => {
+            const { error } = JSON.parse(err)
+            this.error = error
+            throw new Error(error)
+            })
+          })
+          .then(res => {
+           const token = res.token
+           localStorage.setItem("token", token)
+           router.go("/home")
+          })
+          .catch((err) => {
+            console.error(err)
+          })
       }
 
     export default {
@@ -22,16 +42,18 @@
         watch: {
           email(value) {
             const valueDevoid = value === ""
-            this.validateForm(!valueDevoid) 
+            this.validateForm(!valueDevoid)
+            this.error = null 
           },
           password(value) {
             const valueDevoid = value === ""
-            this.validateForm(!valueDevoid) 
+            this.validateForm(!valueDevoid)
+            this.error = null 
           }
         }
       }
     function data() {
-      return { email: "edwin@edwin.fr", password: "MayTheBeer", invalidIdentifiers: false }
+      return { email: "edwin@edwin.fr", password: "MayTheForce", invalidIdentifiers: false, error: null }
     }
 
     function validateForm(bool) {
@@ -69,11 +91,12 @@
         />
         <label for="floatingPassword">Mot de passe</label>
       </div>
-      <span v-if="invalidIdentifiers">Les champs ne peuvent pas être vides</span>
+      <div v-if="invalidIdentifiers" class="error-msg">Les champs ne peuvent pas être vides</div>
+      <div v-if="!invalidIdentifiers && error" class="error-msg">{{ error }}</div>
       
       <button 
         class="w-100 btn btn-lg btn-success" 
-        type="submit" @click.prevent="checkIdentifiers(this.email, this.password)"
+        type="submit" @click.prevent="checkIdentifiers(this.email, this.password, this.$router)"
         :disabled="invalidIdentifiers"
       >
         Se connecter
