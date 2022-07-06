@@ -19,7 +19,6 @@ router.beforeEach((to, from) => {
 function loginRequired(to) {
     if (!privatePage(to)) return false
     if (!tokenInCache()) return true
-    if (!tokenOk()) return true
     return false
 }
 
@@ -30,11 +29,6 @@ function privatePage(to) {
 
 function tokenInCache() {
     return localStorage.getItem("token") != null
-}
-
-function tokenOk() {
-    const token = localStorage.getItem("token")
-    return token === "my JWT token"
 }
 
 export { router }

@@ -50,7 +50,12 @@ function signupUser(req, res) {
 // Hachage des mots de passe
 function passwordHash(password) {
     const saltRounds = 10
-    return bcrypt.hash(password, saltRounds)
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            // returns hash
+            console.log(hash);
+        });
+    });
 }
 
 // Ajout de l'utilisateur à la base de donnée

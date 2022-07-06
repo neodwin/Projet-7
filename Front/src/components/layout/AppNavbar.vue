@@ -3,7 +3,24 @@
     import Logo from "../ui/Logo.vue"
     export default {
         name: "AppNavbar",
-        components: { Logo }
+        components: { Logo },
+        data() {
+          return {
+            isLoggedIn: false
+          }
+        },
+        created() {
+          const token = localStorage.getItem("token")
+          if (token != null) {
+            this.isLoggedIn = true
+          }
+        },
+        methods: {
+          logout() {
+            localStorage.removeItem("token")
+            this.$router.push("/login")
+          }
+        }
     }
 </script>
 
@@ -22,9 +39,9 @@
         </ul>
 
         <div class="text-end">
-          <button @click="$router.push('')" type="button" class="btn btn-outline-success me-2">Connexion</button>
-          <button @click="$router.push('signup')" type="button" class="btn join btn-secondary">Rejoignez-nous</button>
-          <button type="button" class="btn btn-outline-dark ms-2">Déconnexion</button>
+          <button @click="$router.push('')" v-if="!this.isLoggedIn" type="button" class="btn btn-outline-success me-2">Connexion</button>
+          <button @click="$router.push('signup')" v-if="!this.isLoggedIn" type="button" class="btn join btn-secondary">Rejoignez-nous</button>
+          <button @click="logout" v-if="this.isLoggedIn" type="button" class="btn btn-outline-dark ms-2">Déconnexion</button>
         </div>
       </div>
     </div>
