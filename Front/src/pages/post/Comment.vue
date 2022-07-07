@@ -4,7 +4,8 @@
         name: "Comment",
         components: {
             Avatar
-        }
+        },
+        props: ["email", "content"]
     }
 </script>
 
@@ -12,8 +13,8 @@
     <div class="d-flex gap-1">
         <Avatar></Avatar>
         <div class="d-flex flex-column p-1 commentary">
-            <p>Anthony B</p>
-            <p>Magnifique photo</p>
+            <p>{{ email }}</p>
+            <p>{{ content }}</p>
         </div>
         
     </div>
@@ -27,6 +28,7 @@
     background-color: #FFD7D7;
     border-radius: 5px;
     width: 100%;
+    margin-block: 4px;
 }
 .d-flex p {
     margin-bottom: 0;

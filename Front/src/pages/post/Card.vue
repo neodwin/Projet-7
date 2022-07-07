@@ -7,7 +7,8 @@
       components: {
       Comment,
       Avatar,
-    }
+    },
+    props: ["email", "content", "url", "comments"] 
   }
 </script>
 
@@ -15,25 +16,24 @@
 <div class="card mb-3 m-auto">
     <div class="card-header p-2">
         <Avatar></Avatar>
-            Edwin D
+
+            <span>{{ email }}</span>
+
     </div>
-  <img src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp" class="card-img-top" alt="Wild Landscape"/>
+  <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
-    <h5 class="card-title">Card title</h5>
     <p class="card-text">
-      This is a wider card with supporting text below as a natural lead-in to additional
-      content. This content is a little bit longer.
+      {{ content }}
     </p>
     <div class="panel-footer">
         <div class="pull-right">
           <font-awesome-icon :icon="['fa-regular', 'thumbs-up']" /> <div id="like1-bs3"></div>
         </div>  
     </div>
-    <p class="card-text">
-      <small class="text-muted">Last updated 3 mins ago</small>
-    </p>
-    <Comment></Comment>
-    <Comment></Comment>
+    <div v-for="comment in comments">
+      <Comment :email="comment.user" :content="comment.content"></Comment>
+    </div>
+    
 
     <div class="d-flex gap-1">
       <Avatar></Avatar>
