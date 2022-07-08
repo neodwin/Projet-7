@@ -1,26 +1,31 @@
 <script>
     export default {
         name: "PostForm",
-        data: function () {
+        data() {
             return {
-            content: ""
-            };
+            content: "",
+            selectImage: null
+            }
         },
         methods: {
+            handleNewFile(e) { 
+                this.selectImage = e.target.files[0]
+            },
             manageClick() {
                 const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
                 const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
 
+                const formData = new FormData()
+                formData.append("content", this.content)
+                formData.append("image", this.selectImage)
+
                 const options = {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json",
                         "Accept": "application/json",
                     },
                     method: "POST",
-                    body: JSON.stringify({
-                      content: this.content
-                    })
+                    body: formData
                 }
                 fetch(url, options)
                     .then((res) => {
@@ -48,8 +53,9 @@
     </div>
     <div class="d-flex">
         <label for="file-input" class="btn btn-secondary mt-1" >Ajouter une image</label>
-        <input id="file-input" type="file" />
-        <button @click="manageClick" type="button" class="btn mt-1 ms-auto btn-primary">Poster</button>
+        <span v-if="selectImage">{{ selectImage.name }}</span>
+        <input id="file-input" type="file" @change="handleNewFile" />
+        <button @click="manageClick" type="button" class="btn mt-1 ms-auto btn-primary ms-auto rounded-pill">Poster</button>
     </div>
 
     {{ content }}
@@ -57,9 +63,13 @@
     <hr class="dropdown-divider mt-4" />
 </template>
 
-<style module>
+<style scoped>
 label[for="file-input"] {
     background-color: #FD2D01;
+}
+div span {
+    font-size: 15px;
+    margin: 15px;
 }
 input[id="file-input"] {
     display: none;

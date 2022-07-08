@@ -31,11 +31,9 @@ export default {
                 }
             })
             .then((res) => {
-                const { posts, email, comments, content } = res
+                const { posts, email } = res
                 this.posts = posts
                 this.email = email
-                this.comments = comments
-                this.content = content
             })
             .catch((err) => console.log("err:", err))
     },
@@ -52,7 +50,13 @@ export default {
     <div v-if="email" class="container-sm">
         <PostForm></PostForm>
         <div v-for="post in posts">
-            <Card :email="post.user" :content="post.content" :url="post.url" :comments="post.comments"> </Card>
+            <Card 
+                :email="post.user" 
+                :content="post.content" 
+                :url="post.imageUrl" 
+                :comments="post.comments"
+                > 
+            </Card>
         </div>
     </div>
 </template>

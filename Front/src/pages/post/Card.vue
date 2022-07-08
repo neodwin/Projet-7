@@ -2,14 +2,48 @@
   import "../../../public/custom.css"
   import Comment from "./Comment.vue"
   import Avatar from "../../components/ui/Avatar.vue"
+  import { url, headers } from "../../../services/fetchOption.js"
   export default {
       name: "Card",
       components: {
       Comment,
       Avatar,
     },
-    props: ["email", "content", "url", "comments"] 
-  }
+    props: ["email", "content", "url", "comments", "id"],
+    data() {
+      return {
+        currentComment: null 
+      }
+    },
+    mounted() {},
+    methods: {
+      addComment(e) {
+        console.log(this.currentComment)
+        console.log(this.$props.id)
+        fetch(url + "/" + this.$props.id, {
+          ...headers, 
+          method: "POST",
+          body: JSON.stringify ({
+            postId: this.$props.id,
+            comment: this.$currentComment
+          })
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              return res.json()
+            } else {
+              throw new Error("Échec de la récupération des posts")
+                        }
+                    })
+                    .then((res) => {
+                      console.log("res:", res)
+                      this.comments.push(res)
+                      this.currentComment = null
+                    })
+                    .catch((err) => console.log("err:", err))
+            }
+      }
+    }
 </script>
 
 <template>
@@ -18,6 +52,8 @@
         <Avatar></Avatar>
 
             <span>{{ email }}</span>
+
+            <i class="bi bi-trash" @click="deletePost"></i>
 
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
@@ -33,12 +69,10 @@
     <div v-for="comment in comments">
       <Comment :email="comment.user" :content="comment.content"></Comment>
     </div>
-    
-
     <div class="d-flex gap-1">
       <Avatar></Avatar>
-      <input type="text" class="form-control" placeholder="Commentaire" aria-label="Commentaire" />
-      <button type="button" class="btn ms-auto btn-primary">Poster</button>
+      <input type="text" class="form-control" placeholder="Commentaire" aria-label="Commentaire" v-model="currentComment" />
+      <button type="button" class="btn ms-auto btn-primary ms-auto rounded-pill" @click="addComment">Poster</button>
     </div>
   </div>
 </div>
@@ -71,5 +105,4 @@
   .svg-inline--fa {
     height: 25px;
   }
-
 </style>
