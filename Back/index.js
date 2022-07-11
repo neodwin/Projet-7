@@ -5,8 +5,8 @@ const bodyParser = require("body-parser")
 const { logUser, signupUser } = require("./controllers/users.js")
 const { postRouter } = require("./routes/posts.js")
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+    //app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.post("/auth/login", logUser)

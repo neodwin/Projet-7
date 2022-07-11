@@ -1,4 +1,6 @@
 <script>
+import { headers } from '../../../services/fetchOption'
+
     export default {
         name: "PostForm",
         data() {
@@ -20,10 +22,7 @@
                 formData.append("image", this.selectImage)
 
                 const options = {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Accept": "application/json",
-                    },
+                    headers,
                     method: "POST",
                     body: formData
                 }

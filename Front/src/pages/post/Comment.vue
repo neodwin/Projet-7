@@ -5,7 +5,16 @@
         components: {
             Avatar
         },
-        props: ["email", "content"]
+        props: {
+            email: {
+                type: String,
+                required: true
+            },
+            content: {
+                type: String,
+                required: true
+            }
+        }
     }
 </script>
 

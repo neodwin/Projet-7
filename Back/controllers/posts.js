@@ -1,15 +1,17 @@
 const comment1 = {
+    id: "comment1",
     user: "bob@bob.com",
     content: "This is my first comment",
-
 }
 
 const comment2 = {
+    id: "comment2",
     user: "bob@bob.com",
     content: "This is my second comment",
 }
 
 const post1 = {
+    id: "1",
     user: "edwin@edwin.fr",
     content: "This is my first post",
     url: "https://mdbcdn.b-cdn.net/img/new/slides/041.webp",
@@ -17,6 +19,7 @@ const post1 = {
 }
 
 const post2 = {
+    id: "2",
     user: "edwin@edwin.fr",
     content: "This is my second post",
     url: "https://mdbcdn.b-cdn.net/img/new/slides/041.webp",
@@ -24,6 +27,7 @@ const post2 = {
 }
 
 const post3 = {
+    id: "3",
     user: "edwin@edwin.fr",
     content: "This is my third post",
     url: "https://mdbcdn.b-cdn.net/img/new/slides/041.webp",
@@ -56,16 +60,15 @@ function createImageUrl(req) {
 }
 
 function createComment(req, res) {
+    console.log("req.body:", req.body)
     const postId = req.params.id
-    const content = req.body.comment1
     const post = posts.find((post) => post.id === postId)
-
-    console.log("post:", post)
 
     const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     const user = req.email
-    const comment = { id, user, content }
-    post.comments.push(comment)
+    const commentSending = { id, user, content: req.body.comment }
+    console.log("commentSending:", commentSending)
+    post.comments.push(commentSending)
     res.send({ post })
 }
 

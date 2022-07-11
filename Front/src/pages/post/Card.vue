@@ -12,38 +12,38 @@
     props: ["email", "content", "url", "comments", "id"],
     data() {
       return {
-        currentComment: null 
+        currentComment: null
       }
     },
     mounted() {},
     methods: {
-      addComment(e) {
+      addComment(e){
         console.log(this.currentComment)
         console.log(this.$props.id)
-        fetch(url + "/" + this.$props.id, {
-          ...headers, 
-          method: "POST",
-          body: JSON.stringify ({
-            postId: this.$props.id,
-            comment: this.$currentComment
-          })
+        const option = {
+        headers: { ...headers, "Content-Type": "application/json" }, 
+        method: "POST",
+        body: JSON.stringify({
+          comment: this.currentComment
         })
-          .then((res) => {
+      }
+      fetch(url + "/" + this.$props.id, option )
+          .then((res)=> {
             if (res.status === 200) {
               return res.json()
             } else {
               throw new Error("Échec de la récupération des posts")
-                        }
-                    })
-                    .then((res) => {
-                      console.log("res:", res)
-                      this.comments.push(res)
-                      this.currentComment = null
-                    })
-                    .catch((err) => console.log("err:", err))
             }
+          })
+          .then((res) => {
+            console.log("res:", res)
+            this.$router.go()
+            //this.currentComment = null
+          })
+          .catch((err) => console.log("err:", err))
       }
     }
+  }
 </script>
 
 <template>
