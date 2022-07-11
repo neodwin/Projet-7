@@ -1,5 +1,6 @@
 <script>
   //import "../../../public/custom.css"
+  import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.css"
   import Comment from "./Comment.vue"
   import Avatar from "../../components/ui/Avatar.vue"
   import { url, headers } from "../../../services/fetchOption.js"
@@ -79,7 +80,7 @@
     </p>
     <div class="panel-footer">
         <div class="pull-right">
-          <font-awesome-icon :icon="['fa-regular', 'thumbs-up']" /> <div id="like1-bs3"></div>
+          <i class="bi bi-hand-thumbs-up"></i>
         </div>  
     </div>
     <div v-for="comment in comments">
@@ -106,11 +107,7 @@
     gap: 15pxrem;
   }
   .bi-trash {
-    border: 1px solid red;
     margin-left: auto;
-    color: black;
-    height: 20px;
-    width: 20px;
   }
   .bi-trash:hover {
     cursor: pointer;
@@ -136,7 +133,12 @@
     background-color: transparent !important; 
     border: none !important; 
   }
-  .svg-inline--fa {
-    height: 25px;
+  .bi-hand-thumbs-up:hover {
+    cursor: pointer;
+    color: dark;
+    transform: scale(1.2);
+  }
+  .bi-hand-thumbs-up::before {
+    font-size: 20px;
   }
 </style>
