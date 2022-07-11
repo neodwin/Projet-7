@@ -56,9 +56,6 @@ import { headers } from '../../../services/fetchOption'
         <input id="file-input" type="file" @change="handleNewFile" />
         <button @click="manageClick" type="button" class="btn mt-1 ms-auto btn-primary ms-auto rounded-pill">Poster</button>
     </div>
-
-    {{ content }}
-
     <hr class="dropdown-divider mt-4" />
 </template>
 

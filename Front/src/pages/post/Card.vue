@@ -1,5 +1,5 @@
 <script>
-  import "../../../public/custom.css"
+  //import "../../../public/custom.css"
   import Comment from "./Comment.vue"
   import Avatar from "../../components/ui/Avatar.vue"
   import { url, headers } from "../../../services/fetchOption.js"
@@ -38,7 +38,25 @@
           .then((res) => {
             console.log("res:", res)
             this.$router.go()
-            //this.currentComment = null
+          })
+          .catch((err) => console.log("err:", err))
+      },
+      deletePost(e) {
+        console.log("id of the post to delete:", this.$props.id)
+        fetch(url + "/" + this.$props.id, {
+          headers: { ...headers, "Content-Type": "application/json" },
+          method: "DELETE"
+        })
+        .then((res)=> {
+            if (res.status === 200) {
+              return res.json()
+            } else {
+              throw new Error("Échec de la suppression du post")
+            }
+          })
+          .then((res) => {
+            console.log("res:", res)
+            this.$router.go()
           })
           .catch((err) => console.log("err:", err))
       }
@@ -48,13 +66,11 @@
 
 <template>
 <div class="card mb-3 m-auto">
-    <div class="card-header p-2">
+    <div class="card-header">
         <Avatar></Avatar>
 
             <span>{{ email }}</span>
-
             <i class="bi bi-trash" @click="deletePost"></i>
-
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
@@ -84,24 +100,42 @@
     width: 70%;
   } 
 }
-.panel-footer { 
-  padding: 8px !important; 
-  background-color: #f9f9f9 !important; 
-  border-bottom-right-radius: 0 !important; 
-  border-bottom-left-radius: 0 !important; 
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 15pxrem;
   }
-  
-.panel-footer div { 
-  width: 15px;
-  display: flex; 
-  gap: 20px;
-  font: 300 normal 1.125em "Roboto",Arial,Verdana,sans-serif; 
-  color: #34495e; 
-  text-align: center; 
-  background-color: transparent !important; 
-  border: none !important; 
-  }	
-
+  .bi-trash {
+    border: 1px solid red;
+    margin-left: auto;
+    color: black;
+    height: 20px;
+    width: 20px;
+  }
+  .bi-trash:hover {
+    cursor: pointer;
+    color: rgb(193, 57, 57);
+    transform: scale(1.1);
+  }
+  .bi-trash::before {
+    font-size: 20px;
+  } 
+  .panel-footer { 
+    padding: 8px !important; 
+    background-color: #f9f9f9 !important; 
+    border-bottom-right-radius: 0 !important; 
+    border-bottom-left-radius: 0 !important; 
+  }
+  .panel-footer div { 
+    width: 15px;
+    display: flex; 
+    gap: 20px;
+    font: 300 normal 1.125em "Roboto",Arial,Verdana,sans-serif !important; 
+    color: #34495e; 
+    text-align: center; 
+    background-color: transparent !important; 
+    border: none !important; 
+  }
   .svg-inline--fa {
     height: 25px;
   }

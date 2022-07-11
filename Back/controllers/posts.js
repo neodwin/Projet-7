@@ -47,7 +47,7 @@ function createPost(req, res) {
 
     const url = hasImage ? createImageUrl(req) : null
     const email = req.email
-    const post = { content, user: email, comments: [], imageUrl: url, id: posts.length + 1 }
+    const post = { content, user: email, comments: [], imageUrl: url, id: String(posts.length + 1) }
     posts.unshift(post)
     res.send({ post })
 }
@@ -59,17 +59,34 @@ function createImageUrl(req) {
     return `${protocol}://${host}/${pathImage}`
 }
 
+function deletePost(req, res) {
+    const postId = req.params.id
+    const post = posts.find((post) => post.id === postId)
+    if (post == null) {
+        return res.status(404).send({ error: "Post non trouvé" })
+    }
+    const index = posts.indexOf(post)
+    posts.splice(index, 1)
+    deleteComments(post)
+    res.send({ message: `Post ${postId} a été supprimé avec succès`, posts })
+}
+
+function deleteComments(post) {
+    post.comments = []
+}
+
 function createComment(req, res) {
-    console.log("req.body:", req.body)
     const postId = req.params.id
     const post = posts.find((post) => post.id === postId)
 
+    if (post == null) {
+        return res.status(404).send({ error: "post non trouvé" })
+    }
     const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     const user = req.email
     const commentSending = { id, user, content: req.body.comment }
-    console.log("commentSending:", commentSending)
     post.comments.push(commentSending)
     res.send({ post })
 }
 
-module.exports = { getPosts, createPost, createComment }
+module.exports = { getPosts, createPost, deletePost, createComment }

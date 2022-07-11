@@ -49,6 +49,7 @@ export default {
 <template>
     <div v-if="email" class="container-sm">
         <PostForm></PostForm>
+        <div v-if="posts.length === 0">Pas de posts sur le mur. Commencez à poster !</div>
         <div v-for="post in posts">
             <Card 
                 :email="post.user" 
