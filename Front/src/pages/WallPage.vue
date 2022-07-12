@@ -2,6 +2,7 @@
 import "../../public/custom.css"
 import Card from "./post/Card.vue"
 import PostForm from "./post/PostForm.vue"
+import { url, headers } from "../../services/fetchOption.js"
 export default {
     name: "WallPage",
     components: {
@@ -15,14 +16,10 @@ export default {
         }
     },
     mounted() {
-        const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
-        const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
         const options = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
+            headers: { ...headers }
         }
-        fetch(url, options)
+        fetch(url +"posts/", options)
             .then((res) => {
                 if (res.status === 200) {
                     return res.json()

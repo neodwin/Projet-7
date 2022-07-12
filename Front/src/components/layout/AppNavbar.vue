@@ -34,13 +34,12 @@
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li>
-            <router-link to="/home" class="nav-link px-2 text-success">Home</router-link>
+            <router-link to="/home" v-if="isLoggedIn" class="nav-link px-2 text-success">Home</router-link>
           </li>
         </ul>
 
         <div class="text-end">
           <button @click="$router.push('')" v-if="!this.isLoggedIn" type="button" class="btn btn-outline-success me-2">Connexion</button>
-          <button @click="$router.push('signup')" v-if="!this.isLoggedIn" type="button" class="btn join btn-secondary">Rejoignez-nous</button>
           <button @click="logout" v-if="this.isLoggedIn" type="button" class="btn btn-outline-dark ms-2">Déconnexion</button>
         </div>
       </div>

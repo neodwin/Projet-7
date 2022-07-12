@@ -28,7 +28,7 @@
           comment: this.currentComment
         })
       }
-      fetch(url + "/" + this.$props.id, option )
+      fetch(url + "posts/" + this.$props.id, option )
           .then((res)=> {
             if (res.status === 200) {
               return res.json()
@@ -44,7 +44,7 @@
       },
       deletePost(e) {
         console.log("id of the post to delete:", this.$props.id)
-        fetch(url + "/" + this.$props.id, {
+        fetch(url + "posts/" + this.$props.id, {
           headers: { ...headers, "Content-Type": "application/json" },
           method: "DELETE"
         })

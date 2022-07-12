@@ -1,3 +1,5 @@
+const { prisma } = require("../db/db.js")
+
 const comment1 = {
     id: "comment1",
     user: "bob@bob.com",

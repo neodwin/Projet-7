@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const { users } = require("../db/db.js")
+const { prisma } = require("../db/db.js")
 
 // Gestion du login
-function logUser(req, res) {
+async function logUser(req, res) {
     const { email, password } = req.body
-    const user = getUser(email)
+    const user = await getUser(email)
 
     if (user == null) return res.status(404).send({ error: "Utilisateur introuvable" })
 
@@ -25,7 +26,8 @@ function makeToken(email) {
 }
 
 function getUser(email) {
-    return users.find(user => user.email === email)
+    return prisma.user.findUnique({ where: { email } }).then((user) => console.log(user))
+        //return users.find(user => user.email === email)
 }
 
 function checkingPassword(user, password) {
@@ -33,17 +35,16 @@ function checkingPassword(user, password) {
 }
 
 // Création signup
-function signupUser(req, res) {
+async function signupUser(req, res) {
     const { email, password, confirmPassword } = req.body
+    if (confirmPassword == null) return res.status(400).send({ error: "Confirmez votre mot de passe s'il vous plait" })
     if (password !== confirmPassword) return res.status(400).send({ error: "Les mots de passe ne correspondent pas" })
-    const user = getUser(email)
+    const user = await getUser(email)
     if (user != null) return res.status(400).send({ error: "L'utilisateur est déjà inscrit" })
 
     passwordHash(password)
-        .then((hash) => {
-            addUserInDb({ email, password: hash })
-            res.send({ email: email })
-        })
+        .then((hash) => addUserInDb({ email, password: hash }))
+        .then((user) => res.send({ user }))
         .catch((error) => res.status(500).send({ error }))
 }
 
@@ -60,7 +61,7 @@ function passwordHash(password) {
 
 // Ajout de l'utilisateur à la base de donnée
 function addUserInDb(user) {
-    users.push(user)
+    return prisma.user.create({ data: user })
 }
 
 module.exports = { logUser, signupUser }
