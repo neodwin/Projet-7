@@ -3,9 +3,10 @@ import WallPage from "../pages/WallPage.vue"
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-    { path: "/login", component: LoginPage },
-    { path: "/signup", component: LoginPage },
-    { path: "/home", component: WallPage }
+    { name: "login", path: "/login", component: LoginPage },
+    { name: "signup", path: "/signup", component: LoginPage },
+    { name: "home", path: "/home", component: WallPage },
+    { path: "/", redirect: "/home" }
 ]
 const router = createRouter({ history: createWebHistory(), routes })
 

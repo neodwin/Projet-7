@@ -7,4 +7,11 @@ const headers = {
     "Accept": "application/json"
 }
 
-export { url, headers }
+function getFetchOptions() {
+    return {
+        url,
+        headers
+    }
+}
+
+export { getFetchOptions }

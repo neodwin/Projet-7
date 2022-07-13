@@ -1,5 +1,4 @@
 <script>
-    import "../../../public/custom.css"
     import Logo from "../ui/Logo.vue"
     export default {
         name: "AppNavbar",

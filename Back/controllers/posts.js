@@ -50,6 +50,9 @@ function createPost(req, res) {
     const url = hasImage ? createImageUrl(req) : null
     const email = req.email
     const post = { content, user: email, comments: [], imageUrl: url, id: String(posts.length + 1) }
+
+    prisma.post.create({ data: post })
+        .then((post) => console.log(post))
     posts.unshift(post)
     res.send({ post })
 }

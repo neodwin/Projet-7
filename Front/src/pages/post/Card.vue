@@ -1,9 +1,8 @@
 <script>
-  //import "../../../public/custom.css"
   import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.css"
   import Comment from "./Comment.vue"
   import Avatar from "../../components/ui/Avatar.vue"
-  import { url, headers } from "../../../services/fetchOption.js"
+  import { getFetchOptions } from "../../../services/fetchOption.js"
   export default {
       name: "Card",
       components: {
@@ -21,6 +20,7 @@
       addComment(e){
         console.log(this.currentComment)
         console.log(this.$props.id)
+        const { url, headers } = getFetchOptions()
         const option = {
         headers: { ...headers, "Content-Type": "application/json" }, 
         method: "POST",

@@ -1,6 +1,6 @@
 <script>
-    import { url, headers } from "../../services/fetchOption.js"
-    import "../../public/custom.css"
+    import { getFetchOptions } from "../../services/fetchOption.js"
+    import axios from "axios"
 
     export default {
         name: "LoginPage",
@@ -20,26 +20,31 @@
           switchLoginMode() {
             this.isLoginMode = !this.isLoginMode
           },
-          signUp: async function(){
-            console.log("sign up")
+          signUp: async function (email, password, confirmPassword, router){
+            const { url } = getFetchOptions()
+            const body = JSON.stringify({
+              email: this.email,
+              password: this.password,
+              confirmPassword: this.confirmPassword
+            })
             const options = {
               method: "POST",
               headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ email: this.email, password: this.password, confirmPassword: this.confirmPassword })
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              }
             }
             try {
-            const res = await fetch(url + "auth/signup")
-                if (res.status === 200) return res.json()
-                  console.log("error:", res)
-                  } catch(err) {
-                    console.log("err:", err)
-                    throw new Error("Echec à la création du compte")
-                    this.$router.push("/login")
-                  }
+              await axios.post(url + "auth/signup", body, options)
+              console.log("router:", router)
+              this.$router.go("/")
+            } catch (err) {
+              const error = err.response.data.error
+              this.error = error
+              throw new Error("Echec à la création d'un compte:" + error)
             }
-          },
+          }
+        },
         watch: {
           email(value) {
             const valueDevoid = value === ""
@@ -59,7 +64,8 @@
     }
     function checkIdentifiers(email, password, router) {
         console.log({ email, password })
-        
+
+        const { url } = getFetchOptions()
         const options = {
           method: 'POST',
           headers: {
@@ -67,19 +73,27 @@
           },
           body: JSON.stringify({ email, password })
         }
+        console.log("options:", options)
         fetch(url + "auth/login", options)
           .then((res) => { 
+            console.log("res2:", res)
             if (res.ok) return res.json()
             res.text().then((err) => {
-            const { error } = JSON.parse(err)
-            this.error = error
-            throw new Error(error)
+              const { error } = JSON.parse(err)
+              this.error = error
+              throw new Error(error)
             })
           })
           .then(res => {
+           console.log("res:", res)
            const token = res.token
            localStorage.setItem("token", token)
-           router.go("/home")
+
+           let tokenStorage
+           while (tokenStorage == null) {
+            tokenStorage = localStorage.getItem("token")
+           }
+           this.$router.push("/home")
           })
           .catch((err) => {
             console.error(err)

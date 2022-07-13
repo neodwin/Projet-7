@@ -1,5 +1,4 @@
 <script>
-  import "../public/custom.css"
   import AppNavbar from './components/layout/AppNavbar.vue'
 
   export default {

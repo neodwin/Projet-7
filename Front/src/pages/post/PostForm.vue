@@ -1,5 +1,5 @@
 <script>
-import { url, headers } from "../../../services/fetchOption.js"
+import { getFetchOptions } from "../../../services/fetchOption.js"
 
     export default {
         name: "PostForm",
@@ -14,8 +14,7 @@ import { url, headers } from "../../../services/fetchOption.js"
                 this.selectImage = e.target.files[0]
             },
             manageClick() {
-                const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
-                const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
+                const { url, headers } = getFetchOptions()
 
                 const formData = new FormData()
                 formData.append("content", this.content)

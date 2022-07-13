@@ -1,8 +1,7 @@
 <script>
-import "../../public/custom.css"
 import Card from "./post/Card.vue"
 import PostForm from "./post/PostForm.vue"
-import { url, headers } from "../../services/fetchOption.js"
+import { getFetchOptions } from "../../services/fetchOption.js"
 export default {
     name: "WallPage",
     components: {
@@ -16,6 +15,7 @@ export default {
         }
     },
     mounted() {
+        const { url, headers } = getFetchOptions()
         const options = {
             headers: { ...headers }
         }

@@ -5,19 +5,20 @@ const { prisma } = require("../db/db.js")
 
 // Gestion du login
 async function logUser(req, res) {
+    console.log("req.body:", req.body)
     const { email, password } = req.body
-    const user = await getUser(email)
+    try {
+        const user = await getUser(email)
+        if (user == null) return res.status(404).send({ error: "Utilisateur introuvable" })
 
-    if (user == null) return res.status(404).send({ error: "Utilisateur introuvable" })
+        const isPasswordCorrect = await checkPassword(user, password)
+        if (!isPasswordCorrect) return res.status(401).send({ error: "Mauvais mot de passe" })
 
-    checkingPassword(user, password)
-        .then((passwordOk) => {
-            if (!passwordOk) return res.status(401).send({ error: "Mot de passe erroné" })
-
-            const token = makeToken(email)
-            res.send({ token: token, email: user.email })
-        })
-        .catch(error => res.status(500).send({ error }))
+        const token = makeToken(email)
+        res.send({ token: token, email: user.email })
+    } catch (error) {
+        res.status(500).send({ error })
+    }
 }
 
 // Création des tokens
@@ -26,10 +27,11 @@ function makeToken(email) {
 }
 
 function getUser(email) {
-    return prisma.user.findUnique({ where: { email } }).then((user) => console.log(user))
-        //return users.find(user => user.email === email)
+    console.log("email:", email)
+    return prisma.user.findUnique({ where: { email } })
 }
 
+// Vérification du mot de passe 
 function checkingPassword(user, password) {
     return bcrypt.compare(password, user.password)
 }
@@ -37,31 +39,31 @@ function checkingPassword(user, password) {
 // Création signup
 async function signupUser(req, res) {
     const { email, password, confirmPassword } = req.body
-    if (confirmPassword == null) return res.status(400).send({ error: "Confirmez votre mot de passe s'il vous plait" })
-    if (password !== confirmPassword) return res.status(400).send({ error: "Les mots de passe ne correspondent pas" })
-    const user = await getUser(email)
-    if (user != null) return res.status(400).send({ error: "L'utilisateur est déjà inscrit" })
+    try {
+        if (confirmPassword == null)
+            return res.status(400).send({ error: "Veuillez confirmer votre mot de passe s'il vous plait" })
+        if (password !== confirmPassword)
+            return res.status(400).send({ error: "Les mots de passe ne sont pas identique" })
+        const userInDatabase = await getUser(email)
+        if (userInDatabase != null) return res.status(400).send({ error: "L'utilisateur existe déjà" })
 
-    passwordHash(password)
-        .then((hash) => addUserInDb({ email, password: hash }))
-        .then((user) => res.send({ user }))
-        .catch((error) => res.status(500).send({ error }))
-}
-
-// Hachage des mots de passe
-function passwordHash(password) {
-    const saltRounds = 10
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
-            // returns hash
-            console.log(hash);
-        });
-    });
+        const hash = await passwordHash(password)
+        const user = await addUserInDb({ email, password: hash })
+        res.send({ user })
+    } catch (error) {
+        res.status(500).send({ error })
+    }
 }
 
 // Ajout de l'utilisateur à la base de donnée
 function addUserInDb(user) {
     return prisma.user.create({ data: user })
+}
+
+// Hachage des mots de passe
+function passwordHash(password) {
+    const NUMBER_OF_SALT_ROUNDS = 10
+    return bcrypt.hash(password, NUMBER_OF_SALT_ROUNDS)
 }
 
 module.exports = { logUser, signupUser }
