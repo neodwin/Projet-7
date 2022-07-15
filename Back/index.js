@@ -14,7 +14,7 @@ prisma.user.findMany().then(console.log).catch(console.error)
 
 // Middleware
 app.use(express.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 // Routes

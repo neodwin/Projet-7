@@ -84,7 +84,7 @@
               throw new Error(error)
             })
           })
-          .then(res => {
+          .then((res) => {
            console.log("res:", res)
            const token = res.token
            localStorage.setItem("token", token)
@@ -125,7 +125,7 @@
           id="floatingPassword" 
           placeholder="Password" 
           v-model="password" 
-          required="required"
+          required="true"
           @invalid="invalidForm"
         />
         <label for="floatingPassword">Mot de passe</label>
@@ -136,7 +136,7 @@
           class="form-control"  
           placeholder="Confirm password" 
           v-model="confirmPassword" 
-          required="required"
+          required="true"
           @invalid="invalidForm"
         />
         <label for="floatingPassword">Confirmez votre Mot de passe</label>
@@ -154,10 +154,10 @@
       </button>
 
       <button 
-        v-if="!isLoginMode"
+        v-else
         class="w-100 btn btn-lg btn-success" 
         type="submit" 
-        @click.prevent="signUp"
+        @click.prevent="() => signUp(this.email, this.password, this.confirmPassword, this.$router)"
         :disabled="invalidIdentifiers"
       >
         Inscrivez-vous

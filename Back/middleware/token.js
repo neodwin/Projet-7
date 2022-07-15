@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const dotenv = require('dotenv')
 
 // Fonction de vérification du token
 function checkingToken(req, res, next) {
