@@ -11,19 +11,22 @@ async function logUser(req, res) {
         const user = await getUser(email)
         if (user == null) return res.status(404).send({ error: "Utilisateur introuvable" })
 
-        const isPasswordCorrect = await checkPassword(user, password)
+        const isPasswordCorrect = await checkingPassword(user, password)
         if (!isPasswordCorrect) return res.status(401).send({ error: "Mauvais mot de passe" })
 
         const token = makeToken(email)
         res.send({ token: token, email: user.email })
     } catch (error) {
-        res.status(500).send({ error })
+        res.status(500).send({ error: 'Login error' })
     }
 }
 
 // Création des tokens
 function makeToken(email) {
-    return jwt.sign({ email }, process.env.PASSWORD_JWT, { expiresIn: '24h' })
+    const passwordJwt = process.env.PASSWORD_JWT
+    const token = jwt.sign({ email: email }, passwordJwt, { expiresIn: "24h" })
+    return token
+        //return jwt.sign({ email }, process.env.PASSWORD_JWT, { expiresIn: '24h' })
 }
 
 function getUser(email) {
