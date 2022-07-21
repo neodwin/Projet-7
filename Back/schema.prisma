@@ -20,5 +20,6 @@ model Post {
     content String
     url String
     user String
-    //comments 
+    comments String
 }
+

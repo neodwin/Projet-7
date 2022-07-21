@@ -44,6 +44,7 @@
       },
       deletePost(e) {
         console.log("id of the post to delete:", this.$props.id)
+        const { url, headers } = getFetchOptions()
         fetch(url + "posts/" + this.$props.id, {
           headers: { ...headers, "Content-Type": "application/json" },
           method: "DELETE"
