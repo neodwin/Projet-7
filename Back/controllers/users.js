@@ -26,7 +26,6 @@ function makeToken(email) {
     const passwordJwt = process.env.PASSWORD_JWT
     const token = jwt.sign({ email: email }, passwordJwt, { expiresIn: "24h" })
     return token
-        //return jwt.sign({ email }, process.env.PASSWORD_JWT, { expiresIn: '24h' })
 }
 
 function getUser(email) {

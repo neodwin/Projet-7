@@ -38,30 +38,52 @@ const post3 = {
 
 const posts = [post1, post2, post3]
 
-function getPosts(req, res) {
+async function getPosts(req, res) {
     const email = req.email
-    res.send({ posts, email })
+    const posts = await prisma.post.findMany({
+        include: {
+            user: {
+                select: {
+                    email: true
+                }
+            },
+            comments: true,
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+    console.log("posts:", posts)
+    res.send({ posts: posts, email })
 }
 
-function createPost(req, res) {
+async function createPost(req, res) {
     const content = req.body.content
-    const hasImage = req.file != null
-
-    const url = hasImage ? createImageUrl(req) : null
     const email = req.email
-    const post = { content, user: email, comments: [], imageUrl: url, id: String(posts.length + 1) }
 
-    prisma.post.create({ data: post })
-        .then((post) => console.log(post))
-    posts.unshift(post)
-    res.send({ post })
+    try {
+        const user = await prisma.user.findUnique({ where: { email } })
+        const userId = user.id
+        const post = { content, userId }
+        addImageUrlInPost(req, post)
+        console.log("post:", post)
+
+        const postInDb = await prisma.post.create({ data: post })
+        res.send({ post: postInDb })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({ error: "Une erreur est survenue" })
+    }
 }
 
-function createImageUrl(req) {
+function addImageUrlInPost(req, post) {
+    const hasImage = req.file != null
+    if (!hasImage) return
     let pathImage = req.file.path.replace("\\", "/")
     const protocol = req.protocol
     const host = req.get("host")
-    return `${protocol}://${host}/${pathImage}`
+    const url = `${protocol}://${host}/${pathImage}`
+    post.imageUrl = url
 }
 
 function deletePost(req, res) {
