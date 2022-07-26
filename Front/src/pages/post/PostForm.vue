@@ -44,7 +44,7 @@ import { getFetchOptions } from "../../../services/fetchOption.js"
 </script>
 
 <template>
-    <div class="form-floating mt-4">
+    <div class="form-floating mt-3">
         <div class="form-outline mt-1">
             <input class="form-control" id="textAreaExample1" rows="4" v-model="content" />
         </div>

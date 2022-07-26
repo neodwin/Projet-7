@@ -9,7 +9,7 @@
       Comment,
       Avatar,
     },
-    props: ["email", "content", "url", "comments", "id"],
+    props: ["email", "content", "url", "comments", "id", "currentUser"],
     data() {
       return {
         currentComment: null
@@ -72,7 +72,7 @@
         <Avatar></Avatar>
 
             <span>{{ email }}</span>
-            <i class="bi bi-trash" @click="deletePost"></i>
+            <i v-if="currentUser === email" class="bi bi-trash" @click="deletePost"></i>
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
@@ -85,7 +85,7 @@
         </div>  
     </div>
     <div v-for="comment in comments">
-      <Comment :email="comment.user" :content="comment.content"></Comment>
+      <Comment :email="comment.user.email" :content="comment.content"></Comment>
     </div>
     <div class="d-flex gap-1">
       <Avatar></Avatar>
