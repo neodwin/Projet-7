@@ -12,11 +12,19 @@
     props: ["email", "content", "url", "comments", "id", "currentUser"],
     data() {
       return {
-        currentComment: null
+        role: this.isAdmin(),
+        currentComment: null,
       }
     },
     mounted() {},
     methods: {
+      isAdmin() {
+        let userLogged = localStorage.getItem("role")
+        if (userLogged === "ADMIN") {
+        console.log("Administrateur connecté")
+        return userLogged
+        }
+      },
       addComment(e){
         console.log(this.currentComment)
         console.log(this.$props.id)
@@ -43,7 +51,6 @@
           .catch((err) => console.log("err:", err))
       },
       deletePost(e) {
-        console.log("id of the post to delete:", this.$props.id)
         const { url, headers } = getFetchOptions()
         fetch(url + "posts/" + this.$props.id, {
           headers: { ...headers, "Content-Type": "application/json" },
@@ -61,7 +68,60 @@
             this.$router.go()
           })
           .catch((err) => console.log("err:", err))
-      }
+      },
+      modifyPost(e) {
+        const { url, headers } = getFetchOptions()
+        fetch(url + "posts/" + this.$props.id, {
+          headers: { ...headers, "Content-Type": "application/json" },
+          method: "POST"
+        })
+        .then((res)=> {
+            if (res.status === 200) {
+              return res.json()
+            } else {
+              throw new Error("Échec de la mise à jour du post")
+            }
+          })
+          .then((res) => {
+            console.log("res:", res)
+            //this.$router.go()
+          })
+          .catch((err) => console.log("err:", err))
+      },
+      likePost() {
+      const url = "http://localhost:3001/home/" + this.$props.id + "/like"
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          email: this.$props.currentUser,
+          postId: this.$props.id,
+        }),
+      })
+        .then((res) => res.json())
+        .catch((err) =>
+          console.error({ message: "Impossible de liker", err })
+        )
+    },
+    deleteLike() {
+      const url = "http://localhost:3001/home/" + this.$props.id + "/like"
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Accept: "application / json",
+          "Content-Type": "application/json",
+        },
+        method: "DELETE",
+      })
+        .then((res) => console.log("Like supprimé", res))
+        .catch((err) =>
+          console.error({ message: "Impossible de supprimer le like ", err })
+        )
+    },
     }
   }
 </script>
@@ -72,8 +132,8 @@
         <Avatar></Avatar>
 
             <span>{{ email }}</span>
-            <i v-if="currentUser === email" class="bi bi-trash" @click="deletePost"></i>
-            <i v-if="currentUser === email" class="bi bi-pencil-square" @click="modifyPost"></i>
+            <i v-if="this.role == 'ADMIN' || currentUser === email" class="bi bi-trash" @click="deletePost"></i>
+            <i v-if="this.role == 'ADMIN' || currentUser === email" class="bi bi-pencil-square" @click="modifyPost"></i>
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
@@ -82,7 +142,7 @@
     </p>
     <div class="panel-footer">
         <div class="pull-right">
-          <i class="bi bi-hand-thumbs-up"></i>
+          <i class="bi bi-hand-thumbs-up" @click="likePost"></i>
         </div>  
     </div>
     <div v-for="comment in comments">

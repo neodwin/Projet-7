@@ -6,9 +6,9 @@
         name: "LoginPage",
         data() {
         return { 
-          email: "edwin@edwin.fr", 
-          password: "MayTheForce",
-          confirmPassword: "MayTheForce",
+          email: "", 
+          password: "",
+          confirmPassword: "",
           invalidIdentifiers: false, 
           error: null, 
           isLoginMode: true

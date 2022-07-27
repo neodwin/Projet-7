@@ -1,5 +1,6 @@
 const { prisma } = require("../db/db.js")
 
+// Fonction d'appel des posts
 async function getPosts(req, res) {
     const email = req.email
     const posts = await prisma.post.findMany({
@@ -30,6 +31,7 @@ async function getPosts(req, res) {
     res.send({ posts: posts, email })
 }
 
+// Fonction de création d'un post
 async function createPost(req, res) {
     const content = req.body.content
     const email = req.email
@@ -49,6 +51,7 @@ async function createPost(req, res) {
     }
 }
 
+// Fonction d'ajout d'une image dans un post
 function addImageUrlInPost(req, post) {
     const hasImage = req.file != null
     if (!hasImage) return
@@ -59,6 +62,7 @@ function addImageUrlInPost(req, post) {
     post.imageUrl = url
 }
 
+// Fonction de suppression d'un post de la base de donnée
 async function deletePost(req, res) {
     const postId = Number(req.params.id)
     try {
@@ -89,7 +93,7 @@ async function deletePost(req, res) {
         res.status(500).send({ error: "Une erreur est survenue" })
     }
 }
-
+// Fonction d'envoi d'un commentaire dans la base de donnée
 async function createComment(req, res) {
     const postId = Number(req.params.id)
     const post = await prisma.post.findUnique({
@@ -115,69 +119,92 @@ async function createComment(req, res) {
     res.send({ comment })
 }
 
-// Modification d'un post
-function modifyPost(req, res) {
-    const params = req.params
-    const id = params.id
-    const hasModifyImage = req.file != null
-    const anotherImage = madeAnotherImage(hasModifyImage, req)
-    Product.findByIdAndUpdate(id, anotherImage)
-        //.then((product) => statusSent(product, res))
-        .then((product) => deleteFile(product))
-        .catch((err) => console.error("problème de mise à jour:", err))
-}
-
-// Fonction de modification de l'image
-function madeAnotherImage(hasModifyImage, req) {
-    if (!hasModifyImage) return req.body
-    const anotherImage = JSON.parse(req.body.post)
-    const fileName = req.file.fileName
-    anotherImage.imageUrl = req.protocol + "://" + req.get("host") + "/uploads/" + fileName;
-    return anotherImage
-}
-
-// Gestion like & dislike
-
-// Fonction d'appel du produit
-function likePost(req, res) {
-    const like = req.body.like
-    const userId = req.body.userId
-    if (![1, -1, 0].includes(like)) return res.status(403).send({ message: "Invalid like value" })
-    postId(req, res)
-        .then((product) => updateLike(product, like, userId, res))
-        .then((product) => product.save())
-        //.then((product) => statusSent(product, res))
-        .catch((err) => res.status(500).send(err))
-}
-
-// Fonction d'ajout d'un like
-function updateLike(product, like, userId, res) {
-    if (like === 1 || like === -1) return modifyLike(product, userId, like)
-    return resetLike(product, userId, res)
-}
-
-// Fonction de gestion d'erreur du like ou dislike
-function resetLike(product, userId, res) {
-    const usersLiked = product.usersLiked
-    if ([usersLiked].every((array) => array.includes(userId)))
-        return Promise.reject("Error")
-    if (![usersLiked].some((array) => array.includes(userId)))
-        return Promise.reject("Error")
-    if (usersLiked.includes(userId)) {
-        --product.likes
-        product.usersLiked = product.usersLiked.filter((id) => id !== userId)
+// Gestion d'erreur de la base donnée
+function statusSent(product, res) {
+    if (product == null) {
+        console.log("Rien à été mis à jour")
+        return res.status(404).send({ message: "Erreur dans la base de donnée" })
     }
-    return product
+    console.log("Tout a été mis à jour:", product)
+    return Promise.resolve(res.status(200).send(product))
+        .then(() => product)
 }
 
-// Fonction d'ajout du userId dans le usersLiked
-function modifyLike(product, userId, like) {
-    const usersLiked = product.usersLiked
-    const likersList = like === 1 ? usersLiked : usersLiked
-    if (likersList.includes(userId)) return product
-    likersList.push(userId)
-    like === 1 ? ++product.likes : ++product.likes
-    return product
+// Fonction de modification d'un post
+async function modifyPost(req, res) {
+    const postId = Number(req.params.id)
+    newContent = req.body.content
+    try {
+        if (req.file != null) {
+            const newImageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+          req.file.filename
+        }`
+            const postModified = await prisma.post.update({
+                where: {
+                    id: postId,
+                },
+                data: {
+                    content: newContent,
+                    imageUrl: newImageUrl,
+                },
+            })
+            res.send(postModified)
+        } else {
+            postModified = await prisma.post.update({
+                where: {
+                    id: postId,
+                },
+                data: {
+                    content: newContent,
+                },
+            })
+            res.send(postModified)
+        }
+    } catch (error) {
+        res.status(500).send({ error: "Une erreur est survenue lors de la modification :", error })
+    }
+}
+
+// Fonction Like
+async function likePost(req, res) {
+    const email = req.body.email
+    console.log("email:", email)
+
+    const postId = Number(req.params.id)
+    console.log("postIdOfParams:", postId)
+
+    const likers = await prisma.user.findUnique({
+        where: { email: email },
+    })
+    console.log("likers:", likers)
+
+    const likersId = Number(likers.id)
+    console.log("likersId:", likersId)
+
+    await prisma.Likes.create({
+            data: {
+                userId: likersId,
+                postId: postId,
+                email: email,
+            },
+        })
+        .then((like) => res.json({ like }))
+        .catch((error) => res.json({ error }))
+}
+async function deleteLike(req, res) {
+    const postId = Number(req.params.id)
+    console.log("postId:", postId)
+
+    const email = req.email
+    console.log("email :", email)
+
+    await prisma.Likes.deleteMany({
+            where: { postId: postId },
+        })
+        .then((res) =>
+            res.send({ message: "like supprimé de la base de données avec succès", res })
+        )
+        .catch((error) => res.send({ error }))
 }
 
 module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost }

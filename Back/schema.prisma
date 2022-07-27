@@ -9,22 +9,28 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique
   password String 
   posts    Post[]
   comments Comment[]
+  role     Role    @default(USER)
 }
 
 model Post {
-  id        Int @id @default(autoincrement())
-  content   String
-  imageUrl  String?
-  userId    Int 
-  user      User @relation(fields: [userId], references: [id])
-  comments  Comment[]
-  createdAt DateTime @default(now())
+  id          Int @id @default(autoincrement())
+  content     String
+  imageUrl    String?
+  userId      Int 
+  user        User @relation(fields: [userId], references: [id])
+  comments    Comment[]
+  createdAt   DateTime @default(now())
 }
 
 model Comment {
@@ -37,3 +43,10 @@ model Comment {
   user      User @relation(fields: [userId], references: [id])
 }
 
+model Like {
+  id          Int    @id @default(autoincrement()) @unique
+  userId      Int
+  postId      Int
+  email       String 
+  @@unique(fields:[email, postId], name:"UniqueLike")
+}
