@@ -73,6 +73,7 @@
 
             <span>{{ email }}</span>
             <i v-if="currentUser === email" class="bi bi-trash" @click="deletePost"></i>
+            <i v-if="currentUser === email" class="bi bi-pencil-square" @click="modifyPost"></i>
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
@@ -105,12 +106,17 @@
   .card-header {
     display: flex;
     align-items: center;
-    gap: 15pxrem;
+    gap: 15px;
   }
   .bi-trash {
     margin-left: auto;
   }
   .bi-trash:hover {
+    cursor: pointer;
+    color: rgb(193, 57, 57);
+    transform: scale(1.1);
+  }
+  .bi-pencil-square:hover {
     cursor: pointer;
     color: rgb(193, 57, 57);
     transform: scale(1.1);

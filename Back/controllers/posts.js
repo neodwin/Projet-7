@@ -115,4 +115,69 @@ async function createComment(req, res) {
     res.send({ comment })
 }
 
-module.exports = { getPosts, createPost, deletePost, createComment }
+// Modification d'un post
+function modifyPost(req, res) {
+    const params = req.params
+    const id = params.id
+    const hasModifyImage = req.file != null
+    const anotherImage = madeAnotherImage(hasModifyImage, req)
+    Product.findByIdAndUpdate(id, anotherImage)
+        //.then((product) => statusSent(product, res))
+        .then((product) => deleteFile(product))
+        .catch((err) => console.error("problème de mise à jour:", err))
+}
+
+// Fonction de modification de l'image
+function madeAnotherImage(hasModifyImage, req) {
+    if (!hasModifyImage) return req.body
+    const anotherImage = JSON.parse(req.body.post)
+    const fileName = req.file.fileName
+    anotherImage.imageUrl = req.protocol + "://" + req.get("host") + "/uploads/" + fileName;
+    return anotherImage
+}
+
+// Gestion like & dislike
+
+// Fonction d'appel du produit
+function likePost(req, res) {
+    const like = req.body.like
+    const userId = req.body.userId
+    if (![1, -1, 0].includes(like)) return res.status(403).send({ message: "Invalid like value" })
+    postId(req, res)
+        .then((product) => updateLike(product, like, userId, res))
+        .then((product) => product.save())
+        //.then((product) => statusSent(product, res))
+        .catch((err) => res.status(500).send(err))
+}
+
+// Fonction d'ajout d'un like
+function updateLike(product, like, userId, res) {
+    if (like === 1 || like === -1) return modifyLike(product, userId, like)
+    return resetLike(product, userId, res)
+}
+
+// Fonction de gestion d'erreur du like ou dislike
+function resetLike(product, userId, res) {
+    const usersLiked = product.usersLiked
+    if ([usersLiked].every((array) => array.includes(userId)))
+        return Promise.reject("Error")
+    if (![usersLiked].some((array) => array.includes(userId)))
+        return Promise.reject("Error")
+    if (usersLiked.includes(userId)) {
+        --product.likes
+        product.usersLiked = product.usersLiked.filter((id) => id !== userId)
+    }
+    return product
+}
+
+// Fonction d'ajout du userId dans le usersLiked
+function modifyLike(product, userId, like) {
+    const usersLiked = product.usersLiked
+    const likersList = like === 1 ? usersLiked : usersLiked
+    if (likersList.includes(userId)) return product
+    likersList.push(userId)
+    like === 1 ? ++product.likes : ++product.likes
+    return product
+}
+
+module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost }

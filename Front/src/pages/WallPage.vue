@@ -52,7 +52,7 @@ export default {
         <div v-if="posts.length === 0">Pas de posts sur le mur. Commencez à poster !</div>
         <div v-for="post in posts">
             <Card 
-                :currentUser="email"
+                :currentUser="currentUser"
                 :email="post.user.email"
                 :content="post.content" 
                 :url="post.imageUrl" 
