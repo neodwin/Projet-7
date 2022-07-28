@@ -73,7 +73,7 @@
         const { url, headers } = getFetchOptions()
         fetch(url + "posts/" + this.$props.id, {
           headers: { ...headers, "Content-Type": "application/json" },
-          method: "POST"
+          method: "PUT"
         })
         .then((res)=> {
             if (res.status === 200) {
@@ -88,8 +88,8 @@
           })
           .catch((err) => console.log("err:", err))
       },
-      likePost() {
-      const url = "http://localhost:3001/home/" + this.$props.id + "/like"
+      likePost(e) {
+      const url = "http://localhost:3001/posts/" + this.$props.id + "/like"
       fetch(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -98,7 +98,7 @@
         },
         method: "POST",
         body: JSON.stringify({
-          email: this.$props.currentUser,
+          userId: this.$props.currentUser,
           postId: this.$props.id,
         }),
       })
@@ -107,8 +107,8 @@
           console.error({ message: "Impossible de liker", err })
         )
     },
-    deleteLike() {
-      const url = "http://localhost:3001/home/" + this.$props.id + "/like"
+    resetLike() {
+      const url = "http://localhost:3001/posts/" + this.$props.id + "/like"
       fetch(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

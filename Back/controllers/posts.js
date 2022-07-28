@@ -167,36 +167,30 @@ async function modifyPost(req, res) {
 
 // Fonction Like
 async function likePost(req, res) {
-    const email = req.body.email
-    console.log("email:", email)
-
+    const userId = req.body.userId
     const postId = Number(req.params.id)
     console.log("postIdOfParams:", postId)
 
     const likers = await prisma.user.findUnique({
-        where: { email: email },
+        where: { id: userId },
     })
     console.log("likers:", likers)
 
     const likersId = Number(likers.id)
     console.log("likersId:", likersId)
 
-    await prisma.Likes.create({
+    await prisma.Like.create({
             data: {
                 userId: likersId,
                 postId: postId,
-                email: email,
             },
         })
         .then((like) => res.json({ like }))
         .catch((error) => res.json({ error }))
 }
-async function deleteLike(req, res) {
+async function resetLike(req, res) {
     const postId = Number(req.params.id)
     console.log("postId:", postId)
-
-    const email = req.email
-    console.log("email :", email)
 
     await prisma.Likes.deleteMany({
             where: { postId: postId },
