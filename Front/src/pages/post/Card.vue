@@ -9,7 +9,7 @@
       Comment,
       Avatar,
     },
-    props: ["email", "content", "url", "comments", "id", "currentUser"],
+    props: ["email", "content", "url", "comments", "id", "currentUser", "userId"],
     data() {
       return {
         role: this.isAdmin(),
@@ -98,7 +98,7 @@
         },
         method: "POST",
         body: JSON.stringify({
-          userId: this.$props.currentUser,
+          userId: this.$props.userId,
           postId: this.$props.id,
         }),
       })
@@ -142,7 +142,7 @@
     </p>
     <div class="panel-footer">
         <div class="pull-right">
-          <i class="bi bi-hand-thumbs-up" @click="likePost"></i>
+          <i class="bi bi-hand-thumbs-up-fill" @click="likePost"></i>
         </div>  
     </div>
     <div v-for="comment in comments">
@@ -200,12 +200,12 @@
     background-color: transparent !important; 
     border: none !important; 
   }
-  .bi-hand-thumbs-up:hover {
+  .bi-hand-thumbs-up-fill:hover {
     cursor: pointer;
-    color: dark;
+    color: rgb(193, 57, 57);
     transform: scale(1.2);
   }
-  .bi-hand-thumbs-up::before {
+  .bi-hand-thumbs-up-fill::before {
     font-size: 20px;
   }
 </style>

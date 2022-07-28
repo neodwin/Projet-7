@@ -37,7 +37,7 @@ export default {
     data() {
         return {
             posts: [],
-            currentUser: null
+            currentUser: null,
         }
     }
 }
@@ -52,7 +52,6 @@ export default {
         <div v-if="posts.length === 0">Pas de posts sur le mur. Commencez à poster !</div>
         <div v-for="post in posts">
             <Card 
-                :userId="userId"
                 :currentUser="currentUser"
                 :email="post.user.email"
                 :content="post.content" 

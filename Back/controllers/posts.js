@@ -39,6 +39,7 @@ async function createPost(req, res) {
     try {
         const user = await prisma.user.findUnique({ where: { email } })
         const userId = user.id
+        console.log("userId:", userId)
         const post = { content, userId }
         addImageUrlInPost(req, post)
         console.log("post:", post)
@@ -168,6 +169,7 @@ async function modifyPost(req, res) {
 // Fonction Like
 async function likePost(req, res) {
     const userId = req.body.userId
+    console.log("userIdOfBody:", userId)
     const postId = Number(req.params.id)
     console.log("postIdOfParams:", postId)
 
@@ -192,7 +194,7 @@ async function resetLike(req, res) {
     const postId = Number(req.params.id)
     console.log("postId:", postId)
 
-    await prisma.Likes.deleteMany({
+    await prisma.Like.deleteMany({
             where: { postId: postId },
         })
         .then((res) =>
