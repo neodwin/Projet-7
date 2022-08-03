@@ -1,6 +1,7 @@
 import LoginPage from "../pages/LoginPage.vue"
 import WallPage from "../pages/WallPage.vue"
 import Card from "../pages/post/Card.vue"
+import ModifyPost from "../pages/ModifyPost.vue"
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -8,6 +9,7 @@ const routes = [
     { name: "signup", path: "/signup", component: LoginPage },
     { name: "home", path: "/home", component: WallPage },
     { name: "like", path: "/home", component: Card },
+    { name: "modify", path: "/home/modify", component: ModifyPost, props: true },
     { path: "/", redirect: "/home" }
 ]
 const router = createRouter({ history: createWebHistory(), routes })

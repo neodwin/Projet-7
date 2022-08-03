@@ -47,6 +47,5 @@ model Like {
   id          Int    @id @default(autoincrement()) @unique
   userId      Int
   postId      Int
-  email       String 
-  @@unique(fields:[email, postId], name:"UniqueLike")
+  @@unique(fields:[userId, postId], name:"UniqueLike")
 }

@@ -2,12 +2,15 @@
   import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.css"
   import Comment from "./Comment.vue"
   import Avatar from "../../components/ui/Avatar.vue"
+  import ModifyPost from "../ModifyPost.vue"
   import { getFetchOptions } from "../../../services/fetchOption.js"
+  const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
   export default {
       name: "Card",
       components: {
       Comment,
       Avatar,
+      ModifyPost,
     },
     props: ["email", "content", "url", "comments", "id", "currentUser", "userId"],
     data() {
@@ -69,27 +72,8 @@
           })
           .catch((err) => console.log("err:", err))
       },
-      modifyPost(e) {
-        const { url, headers } = getFetchOptions()
-        fetch(url + "posts/" + this.$props.id, {
-          headers: { ...headers, "Content-Type": "application/json" },
-          method: "PUT"
-        })
-        .then((res)=> {
-            if (res.status === 200) {
-              return res.json()
-            } else {
-              throw new Error("Échec de la mise à jour du post")
-            }
-          })
-          .then((res) => {
-            console.log("res:", res)
-            //this.$router.go()
-          })
-          .catch((err) => console.log("err:", err))
-      },
       likePost(e) {
-      const url = "http://localhost:3001/posts/" + this.$props.id + "/like"
+      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/` + this.$props.id + "/like"
       fetch(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -108,7 +92,7 @@
         )
     },
     resetLike() {
-      const url = "http://localhost:3001/posts/" + this.$props.id + "/like"
+      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/` + this.$props.id + "/like"
       fetch(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -133,7 +117,8 @@
 
             <span>{{ email }}</span>
             <i v-if="this.role == 'ADMIN' || currentUser === email" class="bi bi-trash" @click="deletePost"></i>
-            <i v-if="this.role == 'ADMIN' || currentUser === email" class="bi bi-pencil-square" @click="modifyPost"></i>
+            <router-link id="bi-pencil-square" :to="{ name: 'modify', params: { id: id, email: email, url: url }, }" >
+            <i v-if="this.role == 'ADMIN' || currentUser === email" class="bi bi-pencil-square"></i> </router-link>
     </div>
   <img v-if="url" :src="url" class="card-img-top" alt="Wild Landscape"/>
   <div class="card-body">
