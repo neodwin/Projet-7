@@ -24,7 +24,7 @@
       isAdmin() {
         let userLogged = localStorage.getItem("role")
         if (userLogged === "ADMIN") {
-        console.log("Administrateur connecté")
+        console.log("L'administrateur est connecté")
         return userLogged
         }
       },

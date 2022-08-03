@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const { users } = require("../db/db.js")
 const { prisma } = require("../db/db.js")
 
 // Gestion du login

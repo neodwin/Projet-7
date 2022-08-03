@@ -14,6 +14,15 @@ export default {
             this.$router.push("/login")
         }
     },
+    methods: {
+        isAdmin() {
+            let userLogged = localStorage.getItem("role")
+            if (userLogged === "ADMIN") {
+                console.log("L'administrateur est connecté")
+                return userLogged
+            }
+        },
+    },
     mounted() {
         const { url, headers } = getFetchOptions()
         const options = {
@@ -31,6 +40,9 @@ export default {
                 const { posts, email } = res
                 this.posts = posts
                 this.currentUser = email
+                
+                const roleAdmin = res.userLogged.role
+                localStorage.setItem("role", roleAdmin)
             })
             .catch((err) => console.log("err:", err))
     },
@@ -38,6 +50,7 @@ export default {
         return {
             posts: [],
             currentUser: null,
+            role: this.isAdmin(),
         }
     }
 }
@@ -46,7 +59,10 @@ export default {
 <template>
     <div v-if="currentUser" class="container-sm">
         <div class="col-sm-12">
-            <h1 class="text-center">Bienvenue {{ currentUser }}</h1>
+            <div v-if="this.role === 'ADMIN'" class="text-center" id="welcomeMessage">Bonjour {{ currentUser }} <br /> Vous êtes connecté en tant que {{ role }} 
+            </div>
+            <div v-else="this.role === 'USER'" class="mb-4" id="welcomeMessage"> Bonjour {{ currentUser }} 
+            </div>
         </div>
         <PostForm></PostForm>
         <div v-if="posts.length === 0">Pas de posts sur le mur. Commencez à poster !</div>
@@ -65,7 +81,8 @@ export default {
 </template>
 
 <style scoped>
-h1 {
+#welcomeMessage {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
     color: #333;
