@@ -73,12 +73,13 @@
           .catch((err) => console.log("err:", err))
       },
       likePost(e) {
-      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/` + this.$props.id + "/like"
+        console.log("userIdFront:", this.$props.userId)
+      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
       fetch(url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
@@ -92,11 +93,11 @@
         )
     },
     resetLike() {
-      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/` + this.$props.id + "/like"
+      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
       fetch(url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application / json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Accept": "application/json",
           "Content-Type": "application/json",
         },
         method: "DELETE",
@@ -105,7 +106,7 @@
         .catch((err) =>
           console.error({ message: "Impossible de supprimer le like ", err })
         )
-    },
+      },
     }
   }
 </script>

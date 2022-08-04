@@ -1,6 +1,6 @@
 <script>
 const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
-
+import { getFetchOptions } from "../../services/fetchOption.js"
     export default {
         name: "modify",
         props: ["id", "email", "url"],
@@ -16,21 +16,18 @@ const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env
             },
             modifyPost() {
                 const id = this.$props.id
-                const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/` 
-                const headers = {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    "Accept": "application/json"
-                }
+                const { url, headers } = getFetchOptions()
 
                 const formData = new FormData()
                 formData.append("content", this.content)
                 formData.append("image", this.selectImage)
 
-                fetch(url + "home/modify/" + id, {
-                headers: { ...headers, "Content-Type": "application/json" },
-                method: "PUT",
-                body: formData,
-                })
+                const options = {
+                    headers,
+                    method: "PUT",
+                    body: formData
+                }
+                fetch(url + "posts/" + id, options)
                 .then((res)=> {
                     if (res.status === 200) {
                     return res.json()

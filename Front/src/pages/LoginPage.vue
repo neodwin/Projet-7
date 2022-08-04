@@ -79,6 +79,7 @@
             console.log("res2:", res)
             if (res.ok) return res.json()
             res.text().then((err) => {
+              console.log("err:", err)
               const { error } = JSON.parse(err)
               this.error = error
               throw new Error(error)

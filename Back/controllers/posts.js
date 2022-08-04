@@ -133,8 +133,10 @@ function statusSent(product, res) {
 
 // Fonction de modification d'un post
 async function modifyPost(req, res) {
+    console.log("modifyPost:", modifyPost)
     const postId = Number(req.params.id)
-    newContent = req.body.content
+    const newContent = req.body.content
+    console.log("newContent:", newContent)
     try {
         if (req.file != null) {
             const newImageUrl = `${req.protocol}://${req.get("host")}/uploads/${
@@ -151,7 +153,7 @@ async function modifyPost(req, res) {
             })
             res.send(postModified)
         } else {
-            postModified = await prisma.post.update({
+            const postModified = await prisma.post.update({
                 where: {
                     id: postId,
                 },
@@ -173,17 +175,24 @@ async function likePost(req, res) {
     const postId = Number(req.params.id)
     console.log("postIdOfParams:", postId)
 
-    const likers = await prisma.user.findUnique({
+    const liker = await prisma.user.findUnique({
         where: { id: userId },
     })
-    console.log("likers:", likers)
+    console.log("liker:", liker)
 
-    const likersId = Number(likers.id)
-    console.log("likersId:", likersId)
+    const likerId = Number(liker.id)
+    console.log("likerId:", likerId)
+
+    // récupérer la liste des likers du post
+    // Vérifier si le userId est présent dans cette liste d'id
+    // Si il est présent : 1) enlever son id de la liste en bdd 
+    // 2) Coté front adapter le bouton
+
+    //if (likerId.includes(liker))
 
     await prisma.Like.create({
             data: {
-                userId: likersId,
+                userId: likerId,
                 postId: postId,
             },
         })
@@ -203,4 +212,4 @@ async function resetLike(req, res) {
         .catch((error) => res.send({ error }))
 }
 
-module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost }
+module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost, resetLike }

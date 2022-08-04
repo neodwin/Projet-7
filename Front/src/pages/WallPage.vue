@@ -69,6 +69,7 @@ export default {
         <div v-for="post in posts">
             <Card 
                 :currentUser="currentUser"
+                :userId="post.userId"
                 :email="post.user.email"
                 :content="post.content" 
                 :url="post.imageUrl" 
