@@ -170,8 +170,9 @@ async function modifyPost(req, res) {
 
 // Fonction Like
 async function likePost(req, res) {
-    console.log("content:", req.body.content)
     try {
+        const like = req.body
+        console.log("bodyLike:", like)
         const userId = req.body.userId
         const postId = req.body.postId
         console.log("userIdOfBody:", userId)
@@ -181,21 +182,50 @@ async function likePost(req, res) {
         })
         console.log("liker:", liker)
 
-        const liked = postId.liker.includes(userId)
-        console.log("liked:", liked)
+        //const liked = !postId.usersLiked.includes(userId)
+        //console.log("liked:", liked)
 
-        if (liker) {
-            postId.like--
-                postId.like = postId.liker.filter(
-                    (liker) => liker !== userId
-                )
-        } else {
-            postId.like++
-                postId.liker.push(userId)
+        // Ajout d'un like
+        if (!postId.liker.includes(userId) && like === 1) {
+            const addLike = await prisma.post.update({
+                where: {
+                    id: postId,
+                    userId: userId,
+                    usersLiked: liker,
+                },
+                data: {
+                    like: like++,
+                },
+            })
+            res.send(addLike)
         }
 
-        console.log("liked:", liked)
-        await Post.updateOne({ id: req.params.id }, postId)
+        // Retrait d'un like
+        if (postId.liker.includes(userId) && like === 0) {
+            const pullLike = await prisma.post.update({
+                where: {
+                    id: postId,
+                    userId: userId,
+                    usersLiked: liker,
+                },
+                data: {
+                    like: like--,
+                },
+            })
+            res.send(pullLike)
+        }
+
+        //if (liked) {
+        //    postId.like--
+        //        postId.like = postId.liker.filter(
+        //            (liker) => liker !== userId
+        //        )
+        //} else {
+        //    postId.like++
+        //        postId.liker.push(userId)
+        //}
+
+        //await Post.updateOne({ id: req.params.id }, postId)
 
         await prisma.Like.create({
             data: {
@@ -204,6 +234,7 @@ async function likePost(req, res) {
                 usersLiked: liker,
             },
         })
+        console.log("usersLiked:", usersLiked)
         res.status(200).json({ postId })
     } catch (e) {
         res.status(400).send("[Error]: " + e)

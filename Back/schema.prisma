@@ -48,5 +48,6 @@ model Like {
   userId      Int
   postId      Int
   usersLiked  Int
+  like        Int
   @@unique(fields:[userId, postId], name:"UniqueLike")
 }

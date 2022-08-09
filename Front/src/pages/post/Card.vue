@@ -83,26 +83,24 @@
         }
       },
       likePost() {
-        const formData = new FormData() 
-          formData.append("userId", this.$props.userId)
-          formData.append("postId", this.$props.id)
-        const { url, headers } = getFetchOptions()
-        const options = {
-                    headers,
-                    method: "POST",
-                    body: formData
-                }
-        console.log("userIdFront:", this.$props.userId)
-        console.log("postIdFront:", this.$props.id)
-        console.log("formDataOfLikeFront:", formData)
-      fetch(url + `posts/${this.$props.id}/like`, options)   
+      const { url, headers } = getFetchOptions()
+
+      const options = {
+        headers: { ...headers, "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          userId: this.$props.userId,
+          postId: this.$props.id,
+        }),
+      }
+
+      fetch(url + `posts/${this.$props.id}/like`, options)
         .then((res) => this.getLike(res))
-        .catch((err) =>
-        console.error({ message: "Impossible de liker", err })
-        )
+        .catch((err) => console.error({ message: "Impossible de liker", err }))
       },
-    }
+    },
   }
+
 </script>
 
 <template>

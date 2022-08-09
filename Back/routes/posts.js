@@ -11,6 +11,6 @@ postRouter.delete("/:id", deletePost)
 postRouter.get("/", getPosts)
 postRouter.post("/", imageUpload, createPost)
 postRouter.put("/:id", checkingToken, imageUpload, modifyPost)
-postRouter.post("/:id/like", checkingToken, likePost)
+postRouter.post("/:id/like", /*checkingToken,*/ likePost)
 
 module.exports = { postRouter }
