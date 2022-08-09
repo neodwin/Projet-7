@@ -4,7 +4,7 @@ const port = process.env.PORT || 3001
 const bodyParser = require("body-parser")
 const { logUser, signupUser } = require("./controllers/users.js")
 const { postRouter } = require("./routes/posts.js")
-    //const { prisma } = require("./db/db.js")
+
 
 // Base de données
 const { PrismaClient } = require("@prisma/client")

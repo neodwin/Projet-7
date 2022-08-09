@@ -170,46 +170,50 @@ async function modifyPost(req, res) {
 
 // Fonction Like
 async function likePost(req, res) {
-    const userId = req.body.userId
-    console.log("userIdOfBody:", userId)
-    const postId = Number(req.params.id)
-    console.log("postIdOfParams:", postId)
+    try {
+        const like = req.body.like
+        console.log("likeInBack:", like)
+        const userId = req.body.userId
+        console.log("userIdOfBody:", userId)
+        const postId = [Number(req.params.id)]
+        console.log("postIdOfParams:", postId)
+        const liker = await prisma.user.findUnique({
+            where: { id: userId },
+        })
+        console.log("liker:", liker)
 
-    const liker = await prisma.user.findUnique({
-        where: { id: userId },
-    })
-    console.log("liker:", liker)
+        const liked = postId.liker.includes(userId)
+        console.log("liked:", liked)
 
-    const likerId = Number(liker.id)
-    console.log("likerId:", likerId)
+        if (liker) {
+            postId.like--
+                postId.like = postId.liker.filter(
+                    (liker) => liker !== userId
+                )
+        } else {
+            postId.like++
+                postId.liker.push(userId)
+        }
 
-    // récupérer la liste des likers du post
-    // Vérifier si le userId est présent dans cette liste d'id
-    // Si il est présent : 1) enlever son id de la liste en bdd 
-    // 2) Coté front adapter le bouton
+        console.log("liked:", liked)
+        await Post.updateOne({ id: req.params.id }, postId)
 
-    //if (likerId.includes(liker))
-
-    await prisma.Like.create({
+        await prisma.Like.create({
             data: {
-                userId: likerId,
+                userId: userId,
                 postId: postId,
+                usersLiked: liker,
             },
         })
-        .then((like) => res.json({ like }))
-        .catch((error) => res.json({ error }))
-}
-async function resetLike(req, res) {
-    const postId = Number(req.params.id)
-    console.log("postId:", postId)
-
-    await prisma.Like.deleteMany({
-            where: { postId: postId },
-        })
-        .then((res) =>
-            res.send({ message: "like supprimé de la base de données avec succès", res })
-        )
-        .catch((error) => res.send({ error }))
+        res.status(200).json({ postId })
+    } catch (e) {
+        res.status(400).send("[Error]: " + e)
+    }
 }
 
-module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost, resetLike }
+// récupérer la liste des liker du post
+// Vérifier si le userId est présent dans cette liste d'id
+// Si il est présent : 1) enlever son id de la liste en bdd 
+// 2) Coté front adapter le bouton
+
+module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost }

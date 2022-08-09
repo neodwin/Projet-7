@@ -17,6 +17,8 @@
       return {
         role: this.isAdmin(),
         currentComment: null,
+        userLike : false,
+        like: "",
       }
     },
     mounted() {},
@@ -72,10 +74,23 @@
           })
           .catch((err) => console.log("err:", err))
       },
-      likePost(e) {
+      getLike() {
+        this.userLiked = this.post.userLiked.find(post => post == this.userId)
+        if (this.userLiked != undefined) {
+          this.userLike = true
+        }
+        else {
+          this.userLike = false
+        }
+      },
+      likePost() {
         console.log("userIdFront:", this.$props.userId)
-      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
-      fetch(url, {
+        console.log("postIdFront:", this.$props.id)
+        const formData = { like : this.like, userIdLike : this.userId }
+        console.log("formDataOfLikeFront:", formData)
+        this.like = 1
+        const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
+      fetch(url, formData, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -87,24 +102,9 @@
           postId: this.$props.id,
         }),
       })
-        .then((res) => res.json())
+        .then((res) => this.getLike(res))
         .catch((err) =>
-          console.error({ message: "Impossible de liker", err })
-        )
-    },
-    resetLike() {
-      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
-      fetch(url, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "DELETE",
-      })
-        .then((res) => console.log("Like supprimé", res))
-        .catch((err) =>
-          console.error({ message: "Impossible de supprimer le like ", err })
+        console.error({ message: "Impossible de liker", err })
         )
       },
     }
@@ -127,9 +127,12 @@
       {{ content }}
     </p>
     <div class="panel-footer">
-        <div class="pull-right">
-          <i class="bi bi-hand-thumbs-up-fill" @click="likePost"></i>
-        </div>  
+         <div v-if="(this.userLike == true)" >
+          <i v-if="this.post.like === 1" class="bi bi-hand-thumbs-up-fill" @click="likePost"></i>
+        </div>
+        <div v-else >
+          <i class="bi bi-hand-thumbs-up" @click="likePost"></i>
+        </div> 
     </div>
     <div v-for="comment in comments">
       <Comment :email="comment.user.email" :content="comment.content"></Comment>
@@ -185,6 +188,14 @@
     text-align: center; 
     background-color: transparent !important; 
     border: none !important; 
+  }
+  .bi-hand-thumbs-up:hover {
+    cursor: pointer;
+    color: rgb(193, 57, 57);
+    transform: scale(1.2);
+  }
+  .bi-hand-thumbs-up::before {
+    font-size: 20px;
   }
   .bi-hand-thumbs-up-fill:hover {
     cursor: pointer;

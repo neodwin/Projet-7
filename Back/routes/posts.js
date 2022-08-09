@@ -1,5 +1,5 @@
 const express = require("express")
-const { getPosts, createPost, deletePost, createComment, likePost, modifyPost, resetLike } = require("../controllers/posts.js")
+const { getPosts, createPost, deletePost, createComment, likePost, modifyPost } = require("../controllers/posts.js")
 const { checkingToken } = require("../middleware/token.js")
 const { imageUpload } = require("../middleware/multer.js")
 
@@ -11,6 +11,6 @@ postRouter.delete("/:id", deletePost)
 postRouter.get("/", getPosts)
 postRouter.post("/", imageUpload, createPost)
 postRouter.put("/:id", checkingToken, imageUpload, modifyPost)
-postRouter.post("/:id/like", checkingToken, likePost, resetLike)
+postRouter.post("/:id/like", checkingToken, likePost)
 
 module.exports = { postRouter }

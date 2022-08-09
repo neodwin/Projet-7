@@ -47,5 +47,6 @@ model Like {
   id          Int    @id @default(autoincrement()) @unique
   userId      Int
   postId      Int
+  usersLiked  Int
   @@unique(fields:[userId, postId], name:"UniqueLike")
 }
