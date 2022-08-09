@@ -170,13 +170,12 @@ async function modifyPost(req, res) {
 
 // Fonction Like
 async function likePost(req, res) {
+    console.log("content:", req.body.content)
     try {
-        const like = req.body.like
-        console.log("likeInBack:", like)
         const userId = req.body.userId
+        const postId = req.body.postId
         console.log("userIdOfBody:", userId)
-        const postId = [Number(req.params.id)]
-        console.log("postIdOfParams:", postId)
+        console.log("postIdOfBody:", postId)
         const liker = await prisma.user.findUnique({
             where: { id: userId },
         })

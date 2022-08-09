@@ -12,13 +12,12 @@
       Avatar,
       ModifyPost,
     },
-    props: ["email", "content", "url", "comments", "id", "currentUser", "userId"],
+    props: ["email", "content", "url", "comments", "id", "currentUser", "userId" ],
     data() {
       return {
         role: this.isAdmin(),
         currentComment: null,
         userLike : false,
-        like: "",
       }
     },
     mounted() {},
@@ -84,24 +83,19 @@
         }
       },
       likePost() {
+        const formData = new FormData() 
+          formData.append("userId", this.$props.userId)
+          formData.append("postId", this.$props.id)
+        const { url, headers } = getFetchOptions()
+        const options = {
+                    headers,
+                    method: "POST",
+                    body: formData
+                }
         console.log("userIdFront:", this.$props.userId)
         console.log("postIdFront:", this.$props.id)
-        const formData = { like : this.like, userIdLike : this.userId }
         console.log("formDataOfLikeFront:", formData)
-        this.like = 1
-        const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts/${this.$props.id}/like`
-      fetch(url, formData, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          userId: this.$props.userId,
-          postId: this.$props.id,
-        }),
-      })
+      fetch(url + `posts/${this.$props.id}/like`, options)   
         .then((res) => this.getLike(res))
         .catch((err) =>
         console.error({ message: "Impossible de liker", err })
