@@ -44,6 +44,7 @@ model Comment {
 }
 
 model Like {
+  email       String  @unique
   id          Int    @id @default(autoincrement()) @unique
   userId      Int
   postId      Int

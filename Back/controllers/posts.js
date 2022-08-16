@@ -121,15 +121,15 @@ async function createComment(req, res) {
 }
 
 // Gestion d'erreur de la base donnée
-function statusSent(product, res) {
-    if (product == null) {
-        console.log("Rien à été mis à jour")
-        return res.status(404).send({ message: "Erreur dans la base de donnée" })
-    }
-    console.log("Tout a été mis à jour:", product)
-    return Promise.resolve(res.status(200).send(product))
-        .then(() => product)
-}
+//function statusSent(product, res) {
+//    if (product == null) {
+//        console.log("Rien à été mis à jour")
+//        return res.status(404).send({ message: "Erreur dans la base de donnée" })
+//    }
+//    console.log("Tout a été mis à jour:", product)
+//    return Promise.resolve(res.status(200).send(product))
+//        .then(() => product)
+//}
 
 // Fonction de modification d'un post
 async function modifyPost(req, res) {
@@ -186,7 +186,7 @@ async function likePost(req, res) {
         //console.log("liked:", liked)
 
         // Ajout d'un like
-        if (!postId.liker.includes(userId) && like === 1) {
+        if (!postId.liker.some(userId) && like === 1) {
             const addLike = await prisma.post.update({
                 where: {
                     id: postId,
@@ -201,7 +201,7 @@ async function likePost(req, res) {
         }
 
         // Retrait d'un like
-        if (postId.liker.includes(userId) && like === 0) {
+        if (postId.liker.some(userId) && like === 0) {
             const pullLike = await prisma.post.update({
                 where: {
                     id: postId,

@@ -74,7 +74,11 @@
           .catch((err) => console.log("err:", err))
       },
       getLike() {
+        userLiked()
+        console.log("userLikedFRONT:", userLiked)
+        console.log("getLikeLOG:", this.getLike)
         this.userLiked = this.post.userLiked.find(post => post == this.userId)
+        console.log("userLikedFRONT:", userLiked)
         if (this.userLiked != undefined) {
           this.userLike = true
         }
@@ -93,7 +97,6 @@
           postId: this.$props.id,
         }),
       }
-
       fetch(url + `posts/${this.$props.id}/like`, options)
         .then((res) => this.getLike(res))
         .catch((err) => console.error({ message: "Impossible de liker", err }))

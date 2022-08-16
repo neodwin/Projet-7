@@ -8,6 +8,13 @@ export default {
         Card,
         PostForm
     },
+        data() {
+            return {
+                posts: [],
+                currentUser: null,
+                role: this.isAdmin(),
+            }
+        },
     beforeCreate() {
         const token = localStorage.getItem("token")
         if (token == null) {
@@ -16,13 +23,13 @@ export default {
     },
     methods: {
         isAdmin() {
-            let userLogged = localStorage.getItem("role")
-            if (userLogged === "ADMIN") {
-                console.log("L'administrateur est connecté")
-                return userLogged
-            }
-        },
-    },
+            const userLogged = localStorage.getItem("role")
+                    if (userLogged === "ADMIN") {
+                        console.log("L'administrateur est connecté")
+                        return userLogged
+                    }
+                },
+            },
     mounted() {
         const { url, headers } = getFetchOptions()
         const options = {
@@ -42,16 +49,10 @@ export default {
                 this.currentUser = email
                 
                 const roleAdmin = res.userLogged.role
+                console.log("roleAdmin:", roleAdmin)
                 localStorage.setItem("role", roleAdmin)
             })
             .catch((err) => console.log("err:", err))
-    },
-    data() {
-        return {
-            posts: [],
-            currentUser: null,
-            role: this.isAdmin(),
-        }
     }
 }
 </script>
