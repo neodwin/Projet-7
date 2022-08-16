@@ -1,3 +1,4 @@
+const { Role } = require("@prisma/client")
 const { prisma } = require("../db/db.js")
 
 // Fonction d'appel des posts
@@ -84,13 +85,17 @@ async function deletePost(req, res) {
             return res.status(404).send({ error: "Post non trouvé" })
         }
         const email = req.email
-        if (email !== post.user.email) {
-            return res.status(404).send({ error: "Vous n'êtes pas le propriétaire de ce post" })
-        }
+        console.log("emailReq:", req.email)
+
+        //if (email !== post.user.email) {
+        //    console.log("post.user.email:", post.user.email)
+        //    return res.status(404).send({ error: "Vous n'êtes pas le propriétaire de ce post" })
+        //}
         await prisma.comment.deleteMany({ where: { postId } })
         await prisma.post.delete({ where: { id: postId } })
         res.send({ message: "Post supprimé avec succès" })
     } catch (err) {
+        console.log("errDelete:", err)
         res.status(500).send({ error: "Une erreur est survenue" })
     }
 }

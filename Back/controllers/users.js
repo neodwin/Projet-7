@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const { prisma } = require("../db/db.js")
 
+
 // Gestion du login
 async function logUser(req, res) {
     console.log("req.body:", req.body)
@@ -14,7 +15,7 @@ async function logUser(req, res) {
         if (!isPasswordCorrect) return res.status(401).send({ error: "Mauvais mot de passe" })
 
         const token = makeToken(email)
-        res.send({ token: token, email: user.email })
+        res.send({ token: token, email: user.email, role: user.role })
     } catch (error) {
         res.status(500).send({ error: 'Login error' })
     }
@@ -30,6 +31,10 @@ function makeToken(email) {
 function getUser(email) {
     console.log("email:", email)
     return prisma.user.findUnique({ where: { email } })
+}
+
+function getUserInfo(id) {
+    return prisma.user.findUnique({ where: { id } })
 }
 
 // Vérification du mot de passe 
@@ -67,4 +72,4 @@ function passwordHash(password) {
     return bcrypt.hash(password, NUMBER_OF_SALT_ROUNDS)
 }
 
-module.exports = { logUser, signupUser }
+module.exports = { logUser, signupUser, getUserInfo }

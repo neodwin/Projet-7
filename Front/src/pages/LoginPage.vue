@@ -85,9 +85,10 @@
             })
           })
           .then((res) => {
-           console.log("res:", res)
+           console.log("resLog:", res)
            const token = res.token
            localStorage.setItem("token", token)
+           localStorage.setItem("role", res.role)
 
            let tokenStorage
            while (tokenStorage == null) {

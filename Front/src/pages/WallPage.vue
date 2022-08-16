@@ -44,13 +44,14 @@ export default {
                 }
             })
             .then((res) => {
+                console.log("res:", res)
                 const { posts, email } = res
                 this.posts = posts
                 this.currentUser = email
-                
+
                 const roleAdmin = res.userLogged.role
                 console.log("roleAdmin:", roleAdmin)
-                localStorage.setItem("role", roleAdmin)
+                localStorage.setItem("role", res.role)
             })
             .catch((err) => console.log("err:", err))
     }
