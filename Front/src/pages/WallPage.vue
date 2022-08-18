@@ -51,7 +51,7 @@ export default {
 
                 const roleAdmin = res.userLogged.role
                 console.log("roleAdmin:", roleAdmin)
-                localStorage.setItem("role", res.role)
+                localStorage.setItem("role", roleAdmin)
             })
             .catch((err) => console.log("err:", err))
     }

@@ -182,73 +182,33 @@ async function likePost(req, res) {
         const postId = req.body.postId
         console.log("userIdOfBody:", userId)
         console.log("postIdOfBody:", postId)
-        const liker = await prisma.user.findUnique({
-            where: { id: userId },
+        const user = await prisma.user.findUnique({
+            where: { email },
         })
-        console.log("liker:", liker)
-
-        //const liked = !postId.usersLiked.includes(userId)
-        //console.log("liked:", liked)
-
-        // Ajout d'un like
-        if (!postId.liker.some(userId) && like === 1) {
-            const addLike = await prisma.post.update({
-                where: {
-                    id: postId,
-                    userId: userId,
-                    usersLiked: liker,
-                },
-                data: {
-                    like: like++,
-                },
-            })
-            res.send(addLike)
-        }
-
-        // Retrait d'un like
-        if (postId.liker.some(userId) && like === 0) {
-            const pullLike = await prisma.post.update({
-                where: {
-                    id: postId,
-                    userId: userId,
-                    usersLiked: liker,
-                },
-                data: {
-                    like: like--,
-                },
-            })
-            res.send(pullLike)
-        }
-
-        //if (liked) {
-        //    postId.like--
-        //        postId.like = postId.liker.filter(
-        //            (liker) => liker !== userId
-        //        )
-        //} else {
-        //    postId.like++
-        //        postId.liker.push(userId)
-        //}
-
-        //await Post.updateOne({ id: req.params.id }, postId)
-
-        await prisma.Like.create({
-            data: {
-                userId: userId,
-                postId: postId,
-                usersLiked: liker,
-            },
-        })
-        console.log("usersLiked:", usersLiked)
-        res.status(200).json({ postId })
-    } catch (e) {
-        res.status(400).send("[Error]: " + e)
+        console.log("userLikePrisma:", user)
+        const userLike = { userLikes: email, userId, postId, like }
+        const addLike = await prisma.likes.create({ data: userLike })
+        res.send({ addLike })
+    } catch (err) {
+        res.status(500).send({ error: "a problem has occurred" })
     }
 }
+async function deleteLike(req, res) {
+    console.log("res:", req);
+    const postId = Number(req.params.id);
+    const email = req.email;
+    try {
+        await prisma.likes.deleteMany({ where: { postId } });
+        res.send({ message: "your likes are disable" });
+    } catch (err) {
+        res.status(500).send({ error: "a problem has occurred" });
+    }
+}
+
 
 // récupérer la liste des liker du post
 // Vérifier si le userId est présent dans cette liste d'id
 // Si il est présent : 1) enlever son id de la liste en bdd 
 // 2) Coté front adapter le bouton
 
-module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost }
+module.exports = { getPosts, createPost, deletePost, createComment, modifyPost, likePost, deleteLike }

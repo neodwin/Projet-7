@@ -12,12 +12,12 @@
       Avatar,
       ModifyPost,
     },
-    props: ["email", "content", "url", "comments", "id", "currentUser", "userId" ],
+    props: ["email", "content", "url", "comments", "id", "currentUser", "userId", "likes" ],
     data() {
       return {
         role: this.isAdmin(),
         currentComment: null,
-        userLike : false,
+        userLikes : false,
       }
     },
     mounted() {},
@@ -73,19 +73,6 @@
           })
           .catch((err) => console.log("err:", err))
       },
-      getLike() {
-        userLiked()
-        console.log("userLikedFRONT:", userLiked)
-        console.log("getLikeLOG:", this.getLike)
-        this.userLiked = this.post.userLiked.find(post => post == this.userId)
-        console.log("userLikedFRONT:", userLiked)
-        if (this.userLiked != undefined) {
-          this.userLike = true
-        }
-        else {
-          this.userLike = false
-        }
-      },
       likePost() {
       const { url, headers } = getFetchOptions()
 
@@ -95,11 +82,46 @@
         body: JSON.stringify({
           userId: this.$props.userId,
           postId: this.$props.id,
+          likes: this.userLikes,
         }),
       }
       fetch(url + `posts/${this.$props.id}/like`, options)
-        .then((res) => this.getLike(res))
-        .catch((err) => console.error({ message: "Impossible de liker", err }))
+        .then(res => {
+                if(res.status === 200) { 
+                    return res.json()
+                    } else {
+                      throw new Error("Impossible de liker")
+                    }
+                })
+            .then((res) => {
+                this.userLikes = true
+            })
+            .catch((err) => console.log("err:", err))
+      },
+      deleteLike() {
+      const { url, headers } = getFetchOptions()
+
+      const options = {
+        headers: { ...headers, "Content-Type": "application/json" },
+        method: "DELETE",
+        body: JSON.stringify({
+          userId: this.$props.userId,
+          postId: this.$props.id,
+          likes: this.userLikes,
+        }),
+      }
+      fetch(url + `posts/${this.$props.id}/like`, options)
+        .then(res => {
+                if(res.status === 200) { 
+                    return res.json()
+                    } else {
+                      throw new Error("Impossible de liker")
+                    }
+                })
+            .then((res) => {
+                this.userLikes = false
+            })
+            .catch((err) => console.log("err:", err))
       },
     },
   }
@@ -122,12 +144,8 @@
       {{ content }}
     </p>
     <div class="panel-footer">
-         <div v-if="(this.userLike == true)" >
-          <i v-if="this.post.like === 1" class="bi bi-hand-thumbs-up-fill" @click="likePost"></i>
-        </div>
-        <div v-else >
-          <i class="bi bi-hand-thumbs-up" @click="likePost"></i>
-        </div> 
+        <i @click="likePost" v-if="!userLikes " class="like bi bi-hand-thumbs-up me-2"></i>
+        <i @click="deleteLike" v-if="userLikes " class="liked bi bi-hand-thumbs-up-fill me-2"></i>
     </div>
     <div v-for="comment in comments">
       <Comment :email="comment.user.email" :content="comment.content"></Comment>
