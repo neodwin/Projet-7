@@ -73,7 +73,7 @@
           })
           .catch((err) => console.log("err:", err))
       },
-      likePost() {
+      likePost(e) {
       const { url, headers } = getFetchOptions()
 
       const options = {
@@ -87,18 +87,21 @@
       }
       fetch(url + `posts/${this.$props.id}/like`, options)
         .then(res => {
+                if (this.userLikes = true) {
+                    console.log("this.userLikesAddLikeFront:", this.userLikes)
                 if(res.status === 200) { 
                     return res.json()
-                    } else {
+                    }} else {
                       throw new Error("Impossible de liker")
                     }
                 })
-            .then((res) => {
-                this.userLikes = true
-            })
+            //.then((res) => {
+            //  this.userLikes = true
+            //  console.log("this.userLikesAddLikeFront:", this.userLikes)
+            //})
             .catch((err) => console.log("err:", err))
       },
-      deleteLike() {
+      deleteLike(e) {
       const { url, headers } = getFetchOptions()
 
       const options = {
@@ -112,15 +115,18 @@
       }
       fetch(url + `posts/${this.$props.id}/like`, options)
         .then(res => {
-                if(res.status === 200) { 
-                    return res.json()
-                    } else {
-                      throw new Error("Impossible de liker")
+                if (this.userLikes = false) {
+                    console.log("this.userLikesDeleteFront:", this.userLikes)
+                 if(res.status === 200) { 
+                  return res.json()
+                  }} else {
+                      throw new Error("Impossible du retirer le like")
                     }
                 })
-            .then((res) => {
-                this.userLikes = false
-            })
+            //.then((res) => {
+            //  this.userLikes = false
+            //  console.log("this.userLikesDeleteFront:", this.userLikes)
+            //})
             .catch((err) => console.log("err:", err))
       },
     },

@@ -20,7 +20,7 @@ model User {
   password String 
   posts    Post[]
   comments Comment[]
-  like        Likes[]
+  like     Likes[]
   role     Role    @default(USER)
 }
 
@@ -31,6 +31,7 @@ model Post {
   userId      Int 
   user        User @relation(fields: [userId], references: [id])
   comments    Comment[]
+  like        Likes[]
   createdAt   DateTime @default(now())
 }
 
@@ -49,8 +50,7 @@ model Likes {
   user        User   @relation(fields: [userId], references: [id]) 
   userId      Int
   postId      Int
-  usersLiked  Int
   like        String
   userLikes   String
-  @@unique(fields:[userId, postId], name:"UniqueLike")
+  post        Post      @relation(fields: [postId], references: [id])
 }
