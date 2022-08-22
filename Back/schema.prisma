@@ -51,6 +51,6 @@ model Likes {
   userId      Int
   postId      Int
   like        String
-  userLikes   String
+  userLike    String
   post        Post      @relation(fields: [postId], references: [id])
 }

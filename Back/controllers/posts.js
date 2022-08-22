@@ -166,7 +166,7 @@ async function modifyPost(req, res) {
 async function likePost(req, res) {
     const email = req.email
     console.log("emailToLike:", email)
-    const like = req.body
+    const like = req.body.likes
     console.log("bodyLike:", like)
     const userId = req.body.userId
     const postId = req.body.postId
@@ -176,6 +176,14 @@ async function likePost(req, res) {
         console.log("userLikePrisma:", user)
         const userLike = { userLikes: email, userId, postId, like }
         console.log("userLike:", userLike)
+
+        if (like == true) {
+            return true
+        }
+        if (like.constructor(email)) {
+            return res.send({ message: "Like ajouté" })
+        }
+
         const addLike = await prisma.likes.create({ data: userLike })
         console.log("addLike:", addLike)
         res.send({ addLike })
@@ -188,10 +196,17 @@ async function likePost(req, res) {
 async function deleteLike(req, res) {
     const postId = req.body.postId
     const email = req.email
+    const like = req.body.likes
 
     try {
+        if (like == false) {
+            return false
+        }
+        if (like.constructor(email)) {
+            return res.send({ message: "Like retiré" })
+        }
         await prisma.likes.deleteMany({ where: { postId } })
-        res.send({ message: "Le like vient d'être retiré" })
+
     } catch (err) {
         res.status(500).send({ error: "Un problème est survenu" })
     }
