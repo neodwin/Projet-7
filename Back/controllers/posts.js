@@ -87,10 +87,6 @@ async function deletePost(req, res) {
         const email = req.email
         console.log("emailReq:", req.email)
 
-        //if (email !== post.user.email) {
-        //    console.log("post.user.email:", post.user.email)
-        //    return res.status(404).send({ error: "Vous n'êtes pas le propriétaire de ce post" })
-        //}
         await prisma.comment.deleteMany({ where: { postId } })
         await prisma.post.delete({ where: { id: postId } })
         res.send({ message: "Post supprimé avec succès" })
@@ -165,9 +161,7 @@ async function modifyPost(req, res) {
 // Fonction d'ajout d'un Like
 async function likePost(req, res) {
     const email = req.email
-    console.log("emailToLike:", email)
     const like = req.body.likes
-    console.log("bodyLike:", like)
     const userId = req.body.userId
     const postId = req.body.postId
 
@@ -177,16 +171,14 @@ async function likePost(req, res) {
         const userLike = { userLikes: email, userId, postId, like }
         console.log("userLike:", userLike)
 
-        if (like == true) {
-            return true
-        }
+        const addLike = await prisma.likes.create({ data: userLike })
+        console.log("addLike:", addLike)
+
         if (like.constructor(email)) {
             return res.send({ message: "Like ajouté" })
         }
-
-        const addLike = await prisma.likes.create({ data: userLike })
-        console.log("addLike:", addLike)
         res.send({ addLike })
+
     } catch (err) {
         res.status(500).send({ error: "un problème est survenu" })
     }
@@ -195,17 +187,21 @@ async function likePost(req, res) {
 // Fonction de retrait d'un Like
 async function deleteLike(req, res) {
     const postId = req.body.postId
+    console.log("postIdToDeleteLike:", postId)
     const email = req.email
+    const userId = req.body.userId
+    console.log("userIdToDeleteLike:", userId)
     const like = req.body.likes
+    console.log("bodyToDeleteLike:", like)
 
     try {
-        if (like == false) {
-            return false
-        }
+        //const postLiked = await prisma.post.findUnique({ where: { postId, userId, email } })
+        //console.log("postLiked:", postLiked)
+        await prisma.likes.delete({ where: { postId, userId }, data: { like: false } })
+        console.log("prisma.likes.update:", prisma.likes.update)
         if (like.constructor(email)) {
             return res.send({ message: "Like retiré" })
         }
-        await prisma.likes.deleteMany({ where: { postId } })
 
     } catch (err) {
         res.status(500).send({ error: "Un problème est survenu" })

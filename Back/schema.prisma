@@ -50,7 +50,7 @@ model Likes {
   user        User   @relation(fields: [userId], references: [id]) 
   userId      Int
   postId      Int
-  like        String
-  userLike    String
+  like        Boolean
+  userLikes    String
   post        Post      @relation(fields: [postId], references: [id])
 }

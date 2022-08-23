@@ -77,6 +77,9 @@
       likePost(e) {
       const { url, headers } = getFetchOptions()
 
+      this.userLikes = true
+      console.log("this.userLikesAddLikeFront:", this.userLikes)
+
       const options = {
         headers: { ...headers, "Content-Type": "application/json" },
         method: "POST",
@@ -94,18 +97,17 @@
                       throw new Error("Impossible de liker")
                     }
                 })
-            .then((res) => {
-              this.userLikes = true
-              console.log("this.userLikesAddLikeFront:", this.userLikes)
-            })
             .catch((err) => console.log("err:", err))
       },
       deleteLike(e) {
       const { url, headers } = getFetchOptions()
 
+      this.userLikes = false
+      console.log("this.userLikesDeleteFront:", this.userLikes)
+
       const options = {
         headers: { ...headers, "Content-Type": "application/json" },
-        method: "DELETE",
+        method: "PUT",
         body: JSON.stringify({
           userId: this.$props.userId,
           postId: this.$props.id,
@@ -120,10 +122,6 @@
                       throw new Error("Impossible du retirer le like")
                     }
                 })
-            .then((res) => {
-              this.userLikes = false
-              console.log("this.userLikesDeleteFront:", this.userLikes)
-            })
             .catch((err) => console.log("err:", err))
       },
     },
